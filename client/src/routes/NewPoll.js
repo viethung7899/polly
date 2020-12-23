@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
+
 import AnswerField from '../components/AnswerField';
 import Banner from '../components/Banner';
-import ButtonWithIcon from '../components/ButtonWithIcon';
+import Button from '../components/Button';
 
 const NewPoll = () => {
   // STATE: question
@@ -10,7 +12,7 @@ const NewPoll = () => {
     setQuestion(event.target.value);
   };
 
-  // STATE answers
+  // STATE: answers
   const [answers, setAnswers] = useState(['', '']);
 
   const handleAnswerChange = (event, index) => {
@@ -36,11 +38,13 @@ const NewPoll = () => {
     <>
       {/* Header */}
       <Banner title="New poll">
-        <ButtonWithIcon
-          icon="fas fa-times"
-          type="is-medium is-danger"
-          title="Cancel"
-        />
+        <NavLink to="/">
+          <Button
+            icon="fas fa-times"
+            type="is-medium is-danger"
+            title="Cancel"
+          />
+        </NavLink>
       </Banner>
       {/* Fields */}
       <div className="container is-fluid mt-6">
@@ -69,7 +73,7 @@ const NewPoll = () => {
         {/* Controls */}
         <div className="level">
           <div className="level-left">
-            <ButtonWithIcon
+            <Button
               title="Add another answer"
               type="is-info"
               icon="fa fa-plus"
@@ -77,7 +81,7 @@ const NewPoll = () => {
             />
           </div>
           <div className="level-right">
-            <ButtonWithIcon
+            <Button
               title="Share the poll"
               type="is-success"
               icon="fas fa-link"

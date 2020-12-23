@@ -1,17 +1,33 @@
-import React from 'react';
-import ButtonWithIcon from '../components/ButtonWithIcon';
+import React, { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
+import { getAllPolls } from '../utils/API';
+
+import Button from '../components/Button';
 import Banner from '../components/Banner';
-import polls from '../data';
 
 const Home = () => {
+  const [polls, setPolls] = useState([]);
+
+  useEffect(() => {
+    // TODO: Get data
+    getAllPolls()
+      .then((polls) => setPolls(polls))
+      .catch(console.log);
+    return () => {
+      setPolls([]);
+    };
+  }, []);
+
   return (
     <>
       <Banner title="Home">
-        <ButtonWithIcon
-          icon="fa fa-plus"
-          type="is-medium is-link"
-          title="Add new poll"
-        />
+        <NavLink to="/new">
+          <Button
+            icon="fa fa-plus"
+            type="is-medium is-link"
+            title="Add new poll"
+          />
+        </NavLink>
       </Banner>
       <div className="container is-fluid mt-4">
         <h1 class="title is-3">

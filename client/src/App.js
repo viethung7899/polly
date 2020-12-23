@@ -9,7 +9,7 @@ import Navbar from './components/Navbar';
 import Home from './routes/Home';
 import Vote from './routes/Vote';
 import NewPoll from './routes/NewPoll';
-import Result from './routes/Result';
+import Poll from './routes/Poll';
 
 const App = () => {
   return (
@@ -17,18 +17,11 @@ const App = () => {
       <div className="App">
         <Navbar />
         <Switch>
-          <Route path="/new">
-            <NewPoll />
-          </Route>
-          <Route path="/vote">
-            <Vote />
-          </Route>
-          <Route path="/result">
-            <Result />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
+          <Route path="/new" exact component={NewPoll} />
+          <Route path="/vote/:id" exact component={Vote} />
+          <Route path="/vote" exact component={Vote} />
+          <Route path="/poll/:id" exact component={Poll} />
+          <Route path="/" exact component={Home} />
         </Switch>
       </div>
     </Router>
