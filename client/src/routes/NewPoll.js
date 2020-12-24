@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import copy from 'copy-to-clipboard';
 
 import AnswerField from '../components/AnswerField';
 import Banner from '../components/Banner';
@@ -7,6 +8,20 @@ import Button from '../components/Button';
 import Notification from '../components/Notification';
 
 import { createNewPoll } from '../utils/API';
+
+// Copy URL
+const copyPollURLForVoting = (submissionID) => {
+  // Build share URL
+  let shareURL = window.location.hostname;
+  if (window.location.port.length > 0) {
+    shareURL += ':' + window.location.port;
+  }
+  shareURL += '/vote/' + submissionID;
+
+  // Copy to clipboard
+  copy(shareURL);
+}
+
 
 const NewPoll = () => {
   const history = useHistory();
@@ -54,7 +69,7 @@ const NewPoll = () => {
   }, [question, answers]);
 
   // Handle submission
-  const [submittedID, setSubmittedID] = useState(null);
+  const [submissionID, setSubmissionID] = useState(null);
   const [error, setError] = useState(null);
   const handleSubmitButton = async (e) => {
     setLoading(true);
@@ -66,7 +81,7 @@ const NewPoll = () => {
     const respond = await createNewPoll({ question, answers });
     if (respond.status === 200) {
       console.log(respond.data.result._id);
-      setSubmittedID(respond.data.result._id);
+      setSubmissionID(respond.data.result._id);
     } else {
       setError(respond.data.message);
     }
@@ -76,18 +91,27 @@ const NewPoll = () => {
   return (
     <>
       {/* Header */}
-      <Banner title="Create new poll" />
+      <Banner title="Create new poll">
+        <Button
+          title="Back to home"
+          type="is-danger"
+          icon="fas fa-home"
+          action={() => {
+            history.push('/');
+          }}
+        />
+      </Banner>
       {/* Fields */}
       <div className="container is-fluid mt-6">
-        <div class="field">
-          <div class="control is-large">
+        <div className="field">
+          <div className="control is-large">
             <input
-              class="input is-info is-large"
+              className="input is-info is-large"
               type="text"
               placeholder="Your question..."
               value={question}
               onChange={handleQuestionChange}
-              disabled={submittedID}
+              disabled={submissionID}
             />
           </div>
         </div>
@@ -99,8 +123,8 @@ const NewPoll = () => {
               answer={answer}
               handleChange={(e) => handleAnswerChange(e, index)}
               handleDelete={(e) => handleDeleteButton(e, index)}
-              canDelete={answers.length > 2 && !submittedID}
-              disabled={submittedID}
+              canDelete={answers.length > 2 && !submissionID}
+              disabled={submissionID}
             />
           );
         })}
@@ -113,29 +137,37 @@ const NewPoll = () => {
               type="is-info"
               icon="fa fa-plus"
               action={handleAddButton}
-              disabled={submittedID}
+              disabled={submissionID}
             />
           </div>
           <div className="level-right">
             <Button
               title="Create poll"
               type="is-success"
-              disabled={!valid || loading || submittedID}
+              disabled={!valid || loading || submissionID}
               action={handleSubmitButton}
             />
           </div>
         </div>
         {/* Message */}
-        {submittedID ? (
+        {submissionID ? (
           <Notification
-            title="Your poll is created"
+            title={`Your poll is created`}
             type="is-success is-light"
           >
-            <Button 
-              title="View your poll"
-              type="is-success is-outlined"
-              action={() => history.push(`/poll/${submittedID}`)}
-            />
+            <div className="buttons">
+              <Button
+                title="Copy poll URL"
+                type="is-success is-outlined"
+                icon="fas fa-link"
+                action={() => copyPollURLForVoting(submissionID)}
+              />
+              <Button
+                title="View your poll"
+                type="is-success is-outlined"
+                action={() => history.push(`/poll/${submissionID}`)}
+              />
+            </div>
           </Notification>
         ) : null}
       </div>

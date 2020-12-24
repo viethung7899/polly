@@ -29,7 +29,22 @@ const Home = () => {
 
   return (
     <>
-      <Banner title="Home" />
+      <Banner title="Home">
+        <div className="buttons">
+          <Button
+            title="Vote"
+            type="is-warning"
+            icon="fas fa-vote-yea"
+            action={() => history.push('/vote')}
+          />
+          <Button
+            title="Create new poll"
+            type="is-info"
+            icon="fas fa-plus"
+            action={() => history.push('/new')}
+          />
+        </div>
+      </Banner>
       {/* Table */}
       {polls.length === 0 && !error && (
         <Notification title="It's empty here..." type="is-info">
