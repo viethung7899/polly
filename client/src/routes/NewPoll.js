@@ -76,14 +76,7 @@ const NewPoll = () => {
   return (
     <>
       {/* Header */}
-      <Banner title="New poll">
-        <Button
-          icon="fas fa-times"
-          type="is-medium is-danger"
-          title="Cancel"
-          action={() => history.push('/')}
-        />
-      </Banner>
+      <Banner title="Create new poll" />
       {/* Fields */}
       <div className="container is-fluid mt-6">
         <div class="field">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, Redirect } from 'react-router-dom';
 
 import Banner from '../components/Banner';
 import Button from '../components/Button';
@@ -12,47 +12,55 @@ const initialState = {
   answers: [],
 };
 
+// Get majority from the poll
+const getMajority = (poll) => {
+  if (poll.answers.length < 2) return null;
+  let majority = poll.answers[0]
+  for (const answer of poll.answers) {
+    if (answer.count > majority.count) majority = answer;
+  }
+  if (majority.count === 0) return null;
+  return majority;
+};
+
 const Result = () => {
   const { id } = useParams();
   const history = useHistory();
   const [poll, setPoll] = useState(initialState);
   const [majority, setMajority] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      // Get data
-      const data = await getPollById(id);
-      setPoll(data);
-
-      // Set the majority
-      setMajority((_) => {
-        let m = data.answers[0];
-        for (const a of data.answers) {
-          if (a.count > m.count) m = a;
+    setLoading(true);
+    getPollById(id)
+      .then((response, reject) => {
+        if (response.status === 200) {
+          const newPoll = response.data.result;
+          setPoll(newPoll);
+          setMajority(getMajority(newPoll));
+        } else {
+          reject(response);
         }
-        return m;
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.log(error);
+        setError('Oops... Something went wrong');
+        setLoading(false);
       });
-      setLoading(false);
-    };
-    fetchData();
+
+    // Cleanup
     return () => {
       setPoll(initialState);
       setMajority(null);
     };
-  }, []);
+  }, [id]);
 
   return (
     <>
-      <Banner title="Result">
-        <Button
-          title="Back to home page"
-          icon="fas fa-home"
-          type="is-medium is-info"
-          action={() => history.push('/')}
-        />
-      </Banner>
+      {error && <Redirect to="/not-found"></Redirect>}
+      <Banner title="Result" />
       <div className="container is-fluid mt-6">
         {loading ? (
           'Loading...'

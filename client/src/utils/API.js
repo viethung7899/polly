@@ -6,25 +6,23 @@ const api = axios.create({
 });
 
 // Get all polls
-const getAllPolls = async () => {
-  const result = await api.get('/');
-  return result.data.result;
+const getAllPolls = () => {
+  return api.get('/');
 };
 
 // Get post by id
-const getPollById = async (id) => {
-  const result = await api.get(`/?id=${id}`);
-  return result.data.result;
+const getPollById = (id) => {
+  return api.get(`/?id=${id}`);
 };
 
 // Create new poll
-const createNewPoll = async (poll) => {
-  return await api.post('/', poll);
+const createNewPoll = (poll) => {
+  return api.post('/', poll);
 };
 
 // Vote
-const vote = async (pollID, answerID) => {
-  return await api.post('/vote', {
+const vote = (pollID, answerID) => {
+  return api.post('/vote', {
     pollID, answerID
   });
 };
