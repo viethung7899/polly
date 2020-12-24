@@ -41,7 +41,7 @@ const Result = () => {
       setPoll(initialState);
       setMajority(null);
     };
-  }, [id]);
+  }, []);
 
   return (
     <>

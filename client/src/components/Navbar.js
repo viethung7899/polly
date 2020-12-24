@@ -1,5 +1,6 @@
 import React from 'react';
-import poll from '../poll.svg'
+import { NavLink } from 'react-router-dom';
+import poll from '../poll.svg';
 
 const Navbar = () => {
   return (
@@ -9,12 +10,9 @@ const Navbar = () => {
       aria-label="main navigation"
     >
       <div className="navbar-brand">
-        <a className="navbar-item" href="https://bulma.io">
-          <img
-            src={poll}
-            alt="Polly logo"
-          />
-        </a>
+        <NavLink to="/" className="navbar-item" href="https://bulma.io">
+          <img src={poll} alt="Polly logo" />
+        </NavLink>
       </div>
     </nav>
   );

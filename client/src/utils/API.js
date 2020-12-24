@@ -8,13 +8,13 @@ const api = axios.create({
 // Get all polls
 const getAllPolls = async () => {
   const result = await api.get('/');
-  return result.data.polls;
+  return result.data.result;
 };
 
 // Get post by id
 const getPollById = async (id) => {
-  const result = await api.get(`/?pollId=${id}`);
-  return result.data.polls[0];
+  const result = await api.get(`/?id=${id}`);
+  return result.data.result;
 };
 
 // Create new poll

@@ -1,18 +1,24 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import AnswerField from '../components/AnswerField';
 import Banner from '../components/Banner';
 import Button from '../components/Button';
+import Notification from '../components/Notification';
+
+import { createNewPoll } from '../utils/API';
 
 const NewPoll = () => {
-  // STATE: question
+  const history = useHistory();
+  const [loading, setLoading] = useState(false);
+
+  // Handle change in question field
   const [question, setQuestion] = useState('');
   const handleQuestionChange = (event) => {
     setQuestion(event.target.value);
   };
 
-  // STATE: answers
+  // Handle change in answer fields
   const [answers, setAnswers] = useState(['', '']);
 
   const handleAnswerChange = (event, index) => {
@@ -21,6 +27,7 @@ const NewPoll = () => {
     setAnswers(newAnswers);
   };
 
+  // Handle all buttons
   const handleAddButton = (event) => {
     event.preventDefault();
     const newAnswers = [...answers, ''];
@@ -34,17 +41,48 @@ const NewPoll = () => {
     setAnswers(newAnswers);
   };
 
+  // Handle the validity of the field
+  const [valid, setValid] = useState(false);
+  useEffect(() => {
+    const validQuestion = question.trim().length > 0;
+    let validAnswers = answers.length >= 2;
+    answers.forEach(
+      (answer) => (validAnswers = validAnswers && answer.trim().length > 0)
+    );
+    setValid(validQuestion && validAnswers);
+    return () => {};
+  }, [question, answers]);
+
+  // Handle submission
+  const [submittedID, setSubmittedID] = useState(null);
+  const [error, setError] = useState(null);
+  const handleSubmitButton = async (e) => {
+    setLoading(true);
+    e.preventDefault();
+    if (!valid) {
+      setLoading(false);
+      return;
+    }
+    const respond = await createNewPoll({ question, answers });
+    if (respond.status === 200) {
+      console.log(respond.data.result._id);
+      setSubmittedID(respond.data.result._id);
+    } else {
+      setError(respond.data.message);
+    }
+    setLoading(false);
+  };
+
   return (
     <>
       {/* Header */}
       <Banner title="New poll">
-        <NavLink to="/">
-          <Button
-            icon="fas fa-times"
-            type="is-medium is-danger"
-            title="Cancel"
-          />
-        </NavLink>
+        <Button
+          icon="fas fa-times"
+          type="is-medium is-danger"
+          title="Cancel"
+          action={() => history.push('/')}
+        />
       </Banner>
       {/* Fields */}
       <div className="container is-fluid mt-6">
@@ -56,6 +94,7 @@ const NewPoll = () => {
               placeholder="Your question..."
               value={question}
               onChange={handleQuestionChange}
+              disabled={submittedID}
             />
           </div>
         </div>
@@ -63,9 +102,12 @@ const NewPoll = () => {
         {answers.map((answer, index) => {
           return (
             <AnswerField
+              key={index}
               answer={answer}
               handleChange={(e) => handleAnswerChange(e, index)}
               handleDelete={(e) => handleDeleteButton(e, index)}
+              canDelete={answers.length > 2 && !submittedID}
+              disabled={submittedID}
             />
           );
         })}
@@ -78,16 +120,31 @@ const NewPoll = () => {
               type="is-info"
               icon="fa fa-plus"
               action={handleAddButton}
+              disabled={submittedID}
             />
           </div>
           <div className="level-right">
             <Button
-              title="Share the poll"
+              title="Create poll"
               type="is-success"
-              icon="fas fa-link"
+              disabled={!valid || loading || submittedID}
+              action={handleSubmitButton}
             />
           </div>
         </div>
+        {/* Message */}
+        {submittedID ? (
+          <Notification
+            title="Your poll is created"
+            type="is-success is-light"
+          >
+            <Button 
+              title="View your poll"
+              type="is-success is-outlined"
+              action={() => history.push(`/poll/${submittedID}`)}
+            />
+          </Notification>
+        ) : null}
       </div>
     </>
   );

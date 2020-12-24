@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { getAllPolls } from '../utils/API';
 
 import Button from '../components/Button';
 import Banner from '../components/Banner';
 
 const Home = () => {
+  const history = useHistory();
   const [polls, setPolls] = useState([]);
 
   useEffect(() => {
@@ -21,13 +22,12 @@ const Home = () => {
   return (
     <>
       <Banner title="Home">
-        <NavLink to="/new">
           <Button
             icon="fa fa-plus"
             type="is-medium is-link"
             title="Add new poll"
+            action={() => history.push('/new')}
           />
-        </NavLink>
       </Banner>
       <div className="container is-fluid mt-4">
         <h1 class="title is-3">
@@ -44,7 +44,7 @@ const Home = () => {
           <tbody>
             {polls.map((poll) => {
               return (
-                <tr>
+                <tr onClick={() => history.push(`/poll/${poll._id}`)}>
                   <td>{poll.question}</td>
                   <td>Today 8:57 AM</td>
                   <td>Vote in progress</td>
