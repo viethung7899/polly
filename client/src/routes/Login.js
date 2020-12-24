@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
 import Button from '../components/Button';
 
 const Login = () => {
+  const { dispatch } = useContext(AuthContext);
   const [loginMode, setLoginMode] = useState(true);
   const [input, setInput] = useState({
     username: '',
@@ -21,14 +24,22 @@ const Login = () => {
   const [valid, setValid] = useState(false);
   useEffect(() => {
     // effect
-    console.log('Chaging');
-    let isValidInput = input.username.trim().length > 0 && input.password.trim().length > 0
-    if (!loginMode) isValidInput = isValidInput && input.password === input.confirmPassword
-    setValid(isValidInput)
+    let isValidInput =
+      input.username.trim().length > 0 && input.password.trim().length > 0;
+    if (!loginMode)
+      isValidInput = isValidInput && input.password === input.confirmPassword;
+    setValid(isValidInput);
     return () => {
-      setValid(false)
+      setValid(false);
     };
   }, [input]);
+
+  // Handle submit
+  const history = useHistory();
+  const handleSubmit = () => {
+    dispatch({ type: 'LOG_IN' });
+    history.push('/');
+  };
 
   return (
     <section className="hero is-primary is-bold is-fullheight-with-navbar">
@@ -97,6 +108,7 @@ const Login = () => {
                   title={loginMode ? 'Log in' : 'Sign up'}
                   type="is-primary"
                   disabled={!valid}
+                  action={handleSubmit}
                 />
                 <Button
                   title={`Switch to ${!loginMode ? 'log in' : 'sign up'}`}

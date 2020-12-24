@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from '../components/Button';
+import { AuthContext } from '../contexts/AuthContext';
 
 const Navbar = () => {
+  const { authenticated, dispatch } = useContext(AuthContext);
   const history = useHistory();
   const [isActive, setIsActive] = useState(false);
+
+  const handleButton = (path) => {
+    history.push(path);
+    setIsActive(false);
+  };
 
   return (
     <nav
@@ -15,10 +22,7 @@ const Navbar = () => {
       <div className="navbar-brand">
         <div
           className="navbar-item"
-          onClick={() => {
-            history.push('/');
-            setIsActive(false);
-          }}
+          onClick={() => handleButton('/')}
           style={{ cursor: 'pointer' }}
         >
           <i className="fas fa-poll-h fa-2x has-text-primary"></i>
@@ -39,28 +43,18 @@ const Navbar = () => {
       </div>
       <div className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
         <div className="navbar-start">
-          <div className="navbar-item">
-            {/* <div className="buttons">
+          {authenticated && <div className="navbar-item">
+            <div className="buttons">
               <Button
-                title="Vote"
-                type="is-warning"
-                icon="fas fa-vote-yea"
+                title="Log out"
+                type="is-danger is-outlined"
                 action={() => {
-                  history.push('/vote');
-                  setIsActive(false);
+                  dispatch({ type: 'LOG_OUT' });
+                  handleButton('/login');
                 }}
               />
-              <Button
-                title="Create new poll"
-                type="is-info"
-                icon="fas fa-plus"
-                action={() => {
-                  history.push('/new');
-                  setIsActive(false);
-                }}
-              />
-            </div> */}
-          </div>
+            </div>
+          </div>}
         </div>
       </div>
     </nav>
