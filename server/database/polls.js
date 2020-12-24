@@ -3,7 +3,7 @@ const Poll = require('../models/Poll');
 const polls = {
   findAll: async () => await Poll.find().exec(),
 
-  findOne: async (pollId) => await Poll.findById(pollId).exec(),
+  findOne: async (id) => await Poll.findById(id).exec(),
 
   addNew: async (poll) => {
     const newPoll = new Poll({

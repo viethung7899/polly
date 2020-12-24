@@ -1,5 +1,5 @@
 const express = require('express');
-const Poll = require('../models/Poll');
+const polls = require('../database/polls');
 
 const router = express.Router();
 
@@ -9,25 +9,26 @@ router.post('/vote', async (req, res, next) => {
   try {
     const result = await polls.vote(pollID, answerID);
     res.status(200).json({
-      result: result
-    })
+      result: result,
+    });
   } catch (error) {
     next(error);
   }
-})
+});
 
 // TODO; get all polls or get a poll by ID
 router.get('/', async (req, res, next) => {
-  const pollID = req.params.pollID;
-  let found = undefined;
+  const id = req.query.id;
+  let result = undefined;
   try {
-    if (pollID) {
-      found = await polls.findOne(pollID);
+    if (id) {
+      console.log(id);
+      result = await polls.findOne(id);
     } else {
-      found = await polls.findAll();
+      result = await polls.findAll();
     }
     res.status(200).json({
-      polls: found,
+      result,
     });
   } catch (error) {
     next(error);
@@ -39,7 +40,7 @@ router.post('/', async (req, res, next) => {
   try {
     const result = await polls.addNew(req.body);
     res.status(200).json({
-      result
+      result,
     });
   } catch (error) {
     next(error);
