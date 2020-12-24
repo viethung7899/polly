@@ -79,7 +79,16 @@ const Vote = () => {
 
   return (
     <>
-      <Banner title="Vote" />
+      <Banner title="Vote">
+        <Button
+          title="Back to home"
+          type="is-danger"
+          icon="fas fa-home"
+          action={() => {
+            history.push('/');
+          }}
+        />
+      </Banner>
       <div className="container is-fluid">
         {/* Enter the poll ID */}
         {poll.question.length === 0 && <IDField loading={loading} />}

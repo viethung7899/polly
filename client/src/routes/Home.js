@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { getAllPolls } from '../utils/API';
+import moment from 'moment';
 
 import Button from '../components/Button';
 import Banner from '../components/Banner';
@@ -82,8 +83,8 @@ const Home = () => {
             <table className="table is-striped is-fullwidth is-hoverable">
               <thead>
                 <tr>
-                  <th>Title</th>
-                  <th>Created time</th>
+                  <th>Question</th>
+                  <th>Created</th>
                   <th>Progress</th>
                 </tr>
               </thead>
@@ -92,11 +93,12 @@ const Home = () => {
                   return (
                     <tr
                       key={poll._id}
+                      style={{cursor: 'pointer'}}
                       onClick={() => history.push(`/poll/${poll._id}`)}
                     >
                       <td>{poll.question}</td>
-                      <td>Today 8:57 AM</td>
-                      <td>Vote in progress</td>
+                      <td>{moment(poll.date).calendar()}</td>
+                      <td className="has-text-success">Vote in progress</td>
                     </tr>
                   );
                 })}

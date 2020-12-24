@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import Button from '../components/Button';
-import logo from '../poll.svg';
 
 const Navbar = () => {
   const history = useHistory();
@@ -22,7 +21,8 @@ const Navbar = () => {
           }}
           style={{ cursor: 'pointer' }}
         >
-          <img src={logo} alt="Polly" width="50" height="50" />
+          <i className="fas fa-poll-h fa-2x has-text-primary"></i>
+          <h1 className="title is-4 ml-2 has-text-primary">Polly</h1>
         </div>
 
         <a
@@ -40,7 +40,7 @@ const Navbar = () => {
       <div className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
         <div className="navbar-start">
           <div className="navbar-item">
-            <div className="buttons">
+            {/* <div className="buttons">
               <Button
                 title="Vote"
                 type="is-warning"
@@ -59,7 +59,7 @@ const Navbar = () => {
                   setIsActive(false);
                 }}
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
