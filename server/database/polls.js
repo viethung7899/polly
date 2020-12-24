@@ -1,7 +1,7 @@
 const Poll = require('../models/Poll');
 
 const polls = {
-  findAll: async () => await Poll.find().exec(),
+  findAll: async () => await Poll.find().sort({date: -1}).exec(),
 
   findOne: async (id) => await Poll.findById(id).exec(),
 

@@ -1,10 +1,5 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/polly', {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-});
-
 const answerSchema = new mongoose.Schema({
   answer: { type: String, required: true },
   count: { type: Number, default: 0 },
