@@ -10,6 +10,7 @@ import Vote from './routes/Vote';
 import NewPoll from './routes/NewPoll';
 import Poll from './routes/Poll';
 import NotFound from './routes/NotFound';
+import Login from './routes/Login';
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
       <>
         <Navbar />
         <Switch>
+          <Route path="/login" exact component={Login} />
           <Route path="/new" exact component={NewPoll} />
           <Route path="/vote/:id" exact component={Vote} />
           <Route path="/vote" exact component={Vote} />
