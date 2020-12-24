@@ -1,7 +1,39 @@
 const express = require('express');
 const polls = require('../database/polls');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const router = express.Router();
+
+// Authorize middleware
+router.use(async (req, res, next) => {
+  try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+      res.status(401);
+      throw new Error('Not allowed');
+    }
+
+    jwt.verify(token, process.env.TOKEN_SECRET, (error, payload) => {
+      if (error) {
+        res.status(403);
+        throw new Error('Not authorized');
+      } else {
+        req.body.user = payload._doc;
+        next();
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.use(async (req, res, next) => {
+  console.log(req.body);
+  next();
+});
 
 // TODO: vote in a poll
 router.post('/vote', async (req, res, next) => {
@@ -27,7 +59,7 @@ router.get('/', async (req, res, next) => {
     } else {
       result = await polls.findAll();
     }
-    res.status(200).json({
+    res.json({
       result,
     });
   } catch (error) {
@@ -39,7 +71,7 @@ router.get('/', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   try {
     const result = await polls.addNew(req.body);
-    res.status(200).json({
+    res.json({
       result,
     });
   } catch (error) {
