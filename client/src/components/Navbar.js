@@ -4,7 +4,7 @@ import Button from '../components/Button';
 import { AuthContext } from '../contexts/AuthContext';
 
 const Navbar = () => {
-  const { authenticated, dispatch } = useContext(AuthContext);
+  const { token, logOut } = useContext(AuthContext);
   const history = useHistory();
   const [isActive, setIsActive] = useState(false);
 
@@ -42,19 +42,21 @@ const Navbar = () => {
         </a>
       </div>
       <div className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
-        <div className="navbar-start">
-          {authenticated && <div className="navbar-item">
-            <div className="buttons">
-              <Button
-                title="Log out"
-                type="is-danger is-outlined"
-                action={() => {
-                  dispatch({ type: 'LOG_OUT' });
-                  handleButton('/login');
-                }}
-              />
+        <div className="navbar-end">
+          {token && (
+            <div className="navbar-item">
+              <div className="buttons">
+                <Button
+                  title="Log out"
+                  type="is-danger is-outlined"
+                  action={() => {
+                    logOut();
+                    handleButton('/login');
+                  }}
+                />
+              </div>
             </div>
-          </div>}
+          )}
         </div>
       </div>
     </nav>

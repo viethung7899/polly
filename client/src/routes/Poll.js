@@ -1,21 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useHistory, useParams, Redirect } from 'react-router-dom';
 
 import Banner from '../components/Banner';
 import Button from '../components/Button';
 import Answer from '../components/Answer';
 
-import { getPollById } from '../utils/API';
-
-const initialState = {
-  question: '',
-  answers: [],
-};
+import { PollContext } from '../contexts/PollContext';
 
 // Get majority from the poll
 const getMajority = (poll) => {
   if (poll.answers.length < 2) return null;
-  let majority = poll.answers[0]
+  let majority = poll.answers[0];
   for (const answer of poll.answers) {
     if (answer.count > majority.count) majority = answer;
   }
@@ -24,50 +19,40 @@ const getMajority = (poll) => {
 };
 
 const Result = () => {
+  const { selected, getPollById, reset } = useContext(PollContext);
   const { id } = useParams();
   const history = useHistory();
-  const [poll, setPoll] = useState(initialState);
   const [majority, setMajority] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    getPollById(id)
-      .then((response, reject) => {
-        if (response.status === 200) {
-          const newPoll = response.data.result;
-          setPoll(newPoll);
-          setMajority(getMajority(newPoll));
-        } else {
-          reject(response);
-        }
-        setLoading(false);
-      })
-      .catch((e) => {
-        console.log(error);
-        setError('Oops... Something went wrong');
-        setLoading(false);
-      });
-
+    console.log('selected');
+    getPollById(id).then(poll => getMajority(poll)).catch(setError);
     // Cleanup
     return () => {
-      setPoll(initialState);
+      reset();
       setMajority(null);
     };
-  }, [id]);
+  }, []);
 
   return (
     <>
       {error && <Redirect to="/not-found"></Redirect>}
-      <Banner title="Result" />
+      <Banner title="Result">
+        <Button
+          title="Back to home"
+          type="is-danger"
+          icon="fas fa-home"
+          action={() => history.push('/')}
+        />
+      </Banner>
       <div className="container is-fluid mt-6">
-        {loading ? (
+        {!selected ? (
           'Loading...'
         ) : (
           <section className="mt-6">
-            <h1 className="title is-1">{poll.question}</h1>
-            {poll.answers.map((answer, index) => {
+            <h1 className="title is-1">{selected.question}</h1>
+            {selected.answers.map((answer, index) => {
               return (
                 <Answer
                   key={index}

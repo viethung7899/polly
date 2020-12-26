@@ -4,7 +4,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import Button from '../components/Button';
 
 const Login = () => {
-  const { dispatch } = useContext(AuthContext);
+  const { logIn, register } = useContext(AuthContext);
   const [loginMode, setLoginMode] = useState(true);
   const [input, setInput] = useState({
     username: '',
@@ -37,8 +37,16 @@ const Login = () => {
   // Handle submit
   const history = useHistory();
   const handleSubmit = () => {
-    dispatch({ type: 'LOG_IN' });
-    history.push('/');
+    const { username, password } = input;
+    if (loginMode) {
+      return logIn(username, password)
+        .then(() => history.push('/'))
+        .catch(console.log);
+    } else {
+      return register(username, password)
+        .then(() => history.push('/'))
+        .catch(console.log);
+    }
   };
 
   return (
@@ -47,7 +55,7 @@ const Login = () => {
         {/* The title */}
         <div className="container columns is-centered">
           <div className="column is-half ">
-            <h1 className="title is-1">{loginMode ? 'Log in' : 'Sign up'}</h1>
+            <h1 className="title is-1">{loginMode ? 'Log in' : 'Register'}</h1>
             <div className="has-background-white p-4">
               {/* Username field */}
               <div className="field">
@@ -105,13 +113,13 @@ const Login = () => {
               {/* Buttons */}
               <div className="buttons is-centered">
                 <Button
-                  title={loginMode ? 'Log in' : 'Sign up'}
+                  title={loginMode ? 'Log in' : 'Register'}
                   type="is-primary"
                   disabled={!valid}
                   action={handleSubmit}
                 />
                 <Button
-                  title={`Switch to ${!loginMode ? 'log in' : 'sign up'}`}
+                  title={`Switch to ${!loginMode ? 'log in' : 'register'}`}
                   type="is-light"
                   action={() => setLoginMode(!loginMode)}
                 />

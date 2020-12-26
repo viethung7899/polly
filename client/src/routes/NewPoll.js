@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import copy from 'copy-to-clipboard';
 
@@ -7,7 +7,7 @@ import Banner from '../components/Banner';
 import Button from '../components/Button';
 import Notification from '../components/Notification';
 
-import { createNewPoll } from '../utils/API';
+import { PollContext } from '../contexts/PollContext';
 
 // Copy URL
 const copyPollURLForVoting = (submissionID) => {
@@ -24,6 +24,7 @@ const copyPollURLForVoting = (submissionID) => {
 
 
 const NewPoll = () => {
+  const {addNewPoll} = useContext(PollContext);
   const history = useHistory();
   const [loading, setLoading] = useState(false);
 
@@ -49,6 +50,7 @@ const NewPoll = () => {
     setAnswers(newAnswers);
   };
 
+  // Handle delete button
   const handleDeleteButton = (event, index) => {
     event.preventDefault();
     const newAnswers = [...answers];
@@ -70,22 +72,15 @@ const NewPoll = () => {
 
   // Handle submission
   const [submissionID, setSubmissionID] = useState(null);
-  const [error, setError] = useState(null);
-  const handleSubmitButton = async (e) => {
+  // const [error, setError] = useState(null);
+  const handleSubmitButton = (e) => {
     setLoading(true);
     e.preventDefault();
     if (!valid) {
       setLoading(false);
       return;
     }
-    const respond = await createNewPoll({ question, answers });
-    if (respond.status === 200) {
-      console.log(respond.data.result._id);
-      setSubmissionID(respond.data.result._id);
-    } else {
-      setError(respond.data.message);
-    }
-    setLoading(false);
+    addNewPoll(question, answers).then(id => setSubmissionID(id)).catch(console.log);
   };
 
   return (

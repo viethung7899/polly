@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { getAllPolls } from '../utils/API';
 import moment from 'moment';
+
+import { PollContext } from '../contexts/PollContext';
 
 import Button from '../components/Button';
 import Banner from '../components/Banner';
@@ -9,23 +10,13 @@ import Notification from '../components/Notification';
 
 const Home = () => {
   const history = useHistory();
-  const [polls, setPolls] = useState([]);
+  const { polls, fetchPolls, reset } = useContext(PollContext);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    getAllPolls()
-      .then((respond, reject) => {
-        if (respond.status === 200) {
-          setPolls(respond.data.result);
-        } else {
-          reject();
-        }
-      })
-      .catch((error) => setError('Oops... Something went wrong'));
-    return () => {
-      setPolls([]);
-      setError(null);
-    };
+    reset();
+    fetchPolls().catch((err) => setError('Oops... SOmething wrong'));
+    return () => reset();
   }, []);
 
   return (
@@ -46,16 +37,6 @@ const Home = () => {
           />
         </div>
       </Banner>
-      {/* Table */}
-      {polls.length === 0 && !error && (
-        <Notification title="It's empty here..." type="is-info">
-          <Button
-            title="Create new poll"
-            type="is-info is-light"
-            action={() => history.push('/new')}
-          />
-        </Notification>
-      )}
 
       <div className="container is-fluid mt-6">
         {/* Error message */}
@@ -68,7 +49,7 @@ const Home = () => {
           <Notification title="It's empty here..." type="is-info">
             <Button
               title="Create new poll"
-              type="is-info is-light"
+              type="is-info is-light is-outlined"
               action={() => history.push('/new')}
             />
           </Notification>
@@ -93,7 +74,7 @@ const Home = () => {
                   return (
                     <tr
                       key={poll._id}
-                      style={{cursor: 'pointer'}}
+                      style={{ cursor: 'pointer' }}
                       onClick={() => history.push(`/poll/${poll._id}`)}
                     >
                       <td>{poll.question}</td>

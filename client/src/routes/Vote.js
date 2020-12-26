@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { getPollById, vote } from '../utils/API';
+
+import { PollContext } from '../contexts/PollContext';
 
 import Banner from '../components/Banner';
 import Button from '../components/Button';
@@ -8,73 +9,41 @@ import Answer from '../components/Answer';
 import IDField from '../components/IDField';
 import Notification from '../components/Notification';
 
-const initialState = {
-  question: '',
-  answers: [],
-};
-
 const Vote = () => {
+  const { selected, getPollById, vote, reset } = useContext(PollContext);
   const { id } = useParams();
   const history = useHistory();
-  const [selected, setSelected] = useState(-1);
+  const [answerID, setAnswerID] = useState(-1);
   const [voted, setVoted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [poll, setPoll] = useState(initialState);
   const [error, setError] = useState(null);
 
   // Fetch poll by id
   useEffect(() => {
-    // const fetchPoll = async () => {
-    //   setLoading(true);
-    //   if (!id) {
-    //     setLoading(false);
-    //     return;
-    //   }
-    //   // Get vote by id
-    //   const data = await getPollById(id);
-    //   setPoll(data);
-    //   setLoading(false);
-    // };
-    // fetchPoll();
-    if (id) {
-      setLoading(true);
-      getPollById(id)
-        .then((response, reject) => {
-          if (response.status === 200) {
-            setPoll(response.data.result);
-            setError(null);
-          } else {
-            reject();
-          }
-          setLoading(false);
-        })
-        .catch((e) => {
-          setError(
-            'Oops... Something went wrong. May be your poll ID is not valid'
-          );
-          setLoading(false);
-        });
-    }
+    if (!id) return;
+    setLoading(true);
+    getPollById(id)
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
     return () => {
-      setPoll(initialState);
-      setSelected(-1);
+      reset();
+      setAnswerID(-1);
       setVoted(false);
-      setError(null);
     };
   }, [id]);
 
   const handleVote = (e, i) => {
     e.preventDefault();
-    setSelected(i);
+    setAnswerID(i);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     setLoading(true);
     e.preventDefault();
-    setVoted(true);
-    // TODO: Call vote API
-    await vote(id, selected);
-    setLoading(false);
+    vote(id, answerID)
+      .then(() => setVoted(true))
+      .catch((err) => setError(err))
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -90,14 +59,14 @@ const Vote = () => {
         />
       </Banner>
       <div className="container is-fluid">
-        {/* Enter the poll ID */}
-        {poll.question.length === 0 && <IDField loading={loading} />}
+        {/* Enter the selected ID */}
+        {!selected && <IDField loading={loading} />}
         {error && <Notification title={error} type="is-danger" />}
-        {poll.question.length > 0 && !error && (
+        {selected && !error && (
           <section className="mt-6">
             <div className="level">
               <div className="level-left">
-                <h1 className="title is-1">{poll.question}</h1>
+                <h1 className="title is-1">{selected.question}</h1>
               </div>
               <div className="level-right">
                 <Button
@@ -110,11 +79,12 @@ const Vote = () => {
               </div>
             </div>
             <div className="options">
-              {poll.answers.map((answer, index) => {
+              {selected.answers.map((answer, index) => {
                 return (
                   <Answer
+                    key={index}
                     title={answer.answer}
-                    selected={index === selected}
+                    selected={index === answerID}
                     action={!voted ? (e) => handleVote(e, index) : null}
                   />
                 );
