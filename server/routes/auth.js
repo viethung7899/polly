@@ -29,7 +29,7 @@ router.post('/login', async (req, res, next) => {
 
     // Tokenize user
     const token = jwt.sign({ ...user }, process.env.TOKEN_SECRET);
-    res.json({
+    res.status(200).json({
       username,
       token,
     });
@@ -57,7 +57,7 @@ router.post('/register', async (req, res, next) => {
     
     // Tokenize user
     const token = jwt.sign({ ...savedUser }, process.env.TOKEN_SECRET);
-    res.json({
+    res.status(200).json({
       username,
       token,
     });

@@ -21,7 +21,7 @@ router.use(async (req, res, next) => {
         res.status(403);
         throw new Error('Not authorized');
       } else {
-        req.body.user = payload._doc;
+        req.body["user"] = payload._doc;
         next();
       }
     });
@@ -30,10 +30,10 @@ router.use(async (req, res, next) => {
   }
 });
 
-router.use(async (req, res, next) => {
-  console.log(req.body);
-  next();
-});
+// router.use(async (req, res, next) => {
+//   console.log(req.body);
+//   next();
+// });
 
 // TODO: vote in a poll
 router.post('/vote', async (req, res, next) => {
@@ -48,16 +48,21 @@ router.post('/vote', async (req, res, next) => {
   }
 });
 
-// TODO; get all polls or get a poll by ID
+// TODO; get all polls from user or get a poll by ID
 router.get('/', async (req, res, next) => {
   const id = req.query.id;
   let result = undefined;
+  const userId = req.body.user._id; 
   try {
     if (id) {
       console.log(id);
       result = await polls.findOne(id);
+      // if (result.authorId !== userId) {
+      //   res.status(403);
+      //   throw new Error("Not allowed to view that polls");
+      // }
     } else {
-      result = await polls.findAll();
+      result = await polls.findByAuthor(userId);
     }
     res.json({
       result,
@@ -70,7 +75,8 @@ router.get('/', async (req, res, next) => {
 // TODO: add a new poll
 router.post('/', async (req, res, next) => {
   try {
-    const result = await polls.addNew(req.body);
+    const {question, answers, user} = req.body;
+    const result = await polls.addNew(question, answers, user);
     res.json({
       result,
     });
