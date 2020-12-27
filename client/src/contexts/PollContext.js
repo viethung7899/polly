@@ -26,13 +26,7 @@ const PollContextProvider = ({ children }) => {
     });
   };
 
-  // Alway fetch post when token is changed
-  useEffect(() => {
-    // console.log('Fetching from context with', token.length);
-    if (token.length > 0) return fetchPolls();
-    else setPolls([]);
-  }, [token]);
-
+  // Cleaning up
   useEffect(() => {
     return () => {
       setPolls([]);
