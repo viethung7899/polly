@@ -19,19 +19,23 @@ const getMajority = (poll) => {
 };
 
 const Result = () => {
-  const { selected, getPollById, reset } = useContext(PollContext);
+  const { token, selected, getPollById, resetSelection } = useContext(PollContext);
   const { id } = useParams();
   const history = useHistory();
   const [majority, setMajority] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log('selected');
-    getPollById(id).then(poll => getMajority(poll)).catch(setError);
-    // Cleanup
+    if (token)
+      getPollById(id)
+        .then((poll) => setMajority(getMajority(poll)))
+        .catch(setError);
+  }, [id, token]);
+
+  useEffect(() => {
     return () => {
-      reset();
       setMajority(null);
+      resetSelection();
     };
   }, []);
 

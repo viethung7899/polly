@@ -1,13 +1,18 @@
+import { useHistory } from "react-router-dom";
+
 import Banner from '../components/Banner';
 import Button from '../components/Button';
 
+
 const NotFound = () => {
+  const history = useHistory();
   return (
-    <Banner title="404 - Not found" type="is-fullheight-with-navbar">
+    <Banner title="You're lost..." type="is-fullheight-with-navbar">
       <Button
-        title="Go home"
+        title="Let's go home"
         type="is-white is-outlined is-medium"
         icon="fas fa-home"
+        action={() => history.push('/')}
       ></Button>
     </Banner>
   );

@@ -1,9 +1,12 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { AuthContext } from './AuthContext';
 
 export const PollContext = createContext();
 
 const PollContextProvider = ({ children }) => {
+  const authContext = useContext(AuthContext);
+  const {token} = authContext;
   const [polls, setPolls] = useState([]);
   const [selected, setSelected] = useState(null);
 
@@ -11,7 +14,7 @@ const PollContextProvider = ({ children }) => {
     baseURL: 'http://localhost:5000/api',
     responseType: 'json',
     headers: {
-      Authorization: 'Bearer ' + localStorage.getItem('token'),
+      Authorization: 'Bearer ' + token,
     },
   });
 
@@ -22,6 +25,20 @@ const PollContextProvider = ({ children }) => {
       else reject(new Error('Oops... Something is wrong'));
     });
   };
+
+  // Alway fetch post when token is changed
+  useEffect(() => {
+    // console.log('Fetching from context with', token.length);
+    if (token.length > 0) return fetchPolls();
+    else setPolls([]);
+  }, [token]);
+
+  useEffect(() => {
+    return () => {
+      setPolls([]);
+      setSelected(null);
+    }
+  }, []);
 
   // Add new poll
   const addNewPoll = (question, answers) => {
@@ -50,20 +67,21 @@ const PollContextProvider = ({ children }) => {
     });
   };
 
-  const reset = () => {
+  const resetSelection = () => {
     setSelected(null);
-  };
+  }
 
   return (
     <PollContext.Provider
       value={{
+        token,
         polls,
         selected,
         fetchPolls,
         addNewPoll,
         getPollById,
         vote,
-        reset,
+        resetSelection
       }}
     >
       {children}

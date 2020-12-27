@@ -13,8 +13,8 @@ const AnswerField = (props) => {
           disabled={disabled}
         />
       </p>
-      <p class="control">
-        <button class="button is-danger" onClick={handleDelete} disabled={!canDelete}>
+      <p className="control">
+        <button className="button is-danger" onClick={handleDelete} disabled={!canDelete}>
           <i className="fas fa-trash-alt"></i>
         </button>
       </p>

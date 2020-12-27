@@ -10,7 +10,7 @@ import IDField from '../components/IDField';
 import Notification from '../components/Notification';
 
 const Vote = () => {
-  const { selected, getPollById, vote, reset } = useContext(PollContext);
+  const { token, selected, getPollById, vote, resetSelection } = useContext(PollContext);
   const { id } = useParams();
   const history = useHistory();
   const [answerID, setAnswerID] = useState(-1);
@@ -20,17 +20,21 @@ const Vote = () => {
 
   // Fetch poll by id
   useEffect(() => {
-    if (!id) return;
+    if (!id || !token) return;
     setLoading(true);
     getPollById(id)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
+  }, [id, token]);
+
+  // Reset the state after leaving the page
+  useEffect(() => {
     return () => {
-      reset();
+      resetSelection();
       setAnswerID(-1);
       setVoted(false);
-    };
-  }, [id]);
+    }
+  }, []);
 
   const handleVote = (e, i) => {
     e.preventDefault();
@@ -74,7 +78,7 @@ const Vote = () => {
                   type="is-success is-medium"
                   action={handleSubmit}
                   loading={loading}
-                  disabled={voted}
+                  disabled={voted || answerID < 0}
                 />
               </div>
             </div>

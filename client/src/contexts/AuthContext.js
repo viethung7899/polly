@@ -19,8 +19,6 @@ const AuthContextProvider = ({ children }) => {
         password: password,
       })
       .then((res) => {
-        console.log('OK');
-        console.log(res.data.token);
         if (res.status === 200) setToken(res.data.token);
       });
   };
@@ -41,12 +39,15 @@ const AuthContextProvider = ({ children }) => {
     localStorage.clear();
   };
 
+  // Persist data
   useEffect(() => {
+    // console.log('Getting token in auth context');
     const data = localStorage.getItem('token');
     if (data) setToken(data);
   }, []);
 
   useEffect(() => {
+    // console.log('Saving token in auth context');
     localStorage.setItem('token', token);
   });
 
