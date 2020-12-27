@@ -1,38 +1,49 @@
 import { useField } from 'formik';
+import Button from '../components/Button'
 
-const convertCamelIntoSentence = (text) => {
-  const result = text.replace(/[A-Z]/g, (match) => ` ${match}`);
-  return result.charAt(0).toUpperCase() + result.slice(1);
-};
+const StyledField = (props) => {
+  const { name, onChange, onBlur, value, error, button, placeholder, size, disabled } = props;
 
-const StyledField = ({ name, type, icon, onChange, onBlur, value, error }) => {
   return (
-    <div className="field">
-      <label className="label">{convertCamelIntoSentence(name)}</label>
-      <div className="control has-icons-left">
-        <input
-          className={`input ${error ? 'is-danger' : ''}`}
-          type={type}
-          placeholder={convertCamelIntoSentence(name)}
-          name={name}
-          onChange={onChange}
-          onBlur={onBlur}
-          value={value}
-        />
-        <span className="icon is-small is-left">
-          <i className={icon}></i>
-        </span>
-        {error && <p class={'help is-danger'}>{error}</p>}
+    <section className="my-3">
+      <div className={`field ${button && 'has-addons'}`}>
+        <div className={`control is-expanded`}>
+          <input
+            className={`input ${error ? 'is-danger' : ''} ${size}`}
+            type="text"
+            name={name}
+            placeholder={placeholder}
+            onChange={onChange}
+            onBlur={onBlur}
+            value={value}
+            autoComplete="off"
+            disabled={disabled}
+          />
+          {error && <p class={'help is-danger'}>{error}</p>}
+        </div>
+        {button && (
+          <div className="control">
+            <Button {...button} />
+          </div>
+        )}
       </div>
-      ;
-    </div>
+    </section>
   );
 };
 
-const InputField = ({ icon, ...props }) => {
+const InputField = ({ button, placeholder, size, disabled, ...props }) => {
   const [field, meta] = useField(props);
   const errorText = meta.error && meta.touched ? meta.error : '';
-  return <StyledField {...field} icon={icon} error={errorText} />;
+  return (
+    <StyledField
+      {...field}
+      button={button}
+      placeholder={placeholder}
+      size={size}
+      disabled={disabled}
+      error={errorText}
+    />
+  );
 };
 
 export default InputField;

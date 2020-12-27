@@ -21,7 +21,7 @@ router.use(async (req, res, next) => {
         res.status(403);
         throw new Error('Not authorized');
       } else {
-        req.body["user"] = payload._doc;
+        req.body['user'] = payload._doc;
         next();
       }
     });
@@ -52,15 +52,11 @@ router.post('/vote', async (req, res, next) => {
 router.get('/', async (req, res, next) => {
   const id = req.query.id;
   let result = undefined;
-  const userId = req.body.user._id; 
+  const userId = req.body.user._id;
   try {
     if (id) {
       console.log(id);
       result = await polls.findOne(id);
-      // if (result.authorId !== userId) {
-      //   res.status(403);
-      //   throw new Error("Not allowed to view that polls");
-      // }
     } else {
       result = await polls.findByAuthor(userId);
     }
@@ -68,14 +64,14 @@ router.get('/', async (req, res, next) => {
       result,
     });
   } catch (error) {
-    next(error);
+    next(new Error('Not found'));
   }
 });
 
 // TODO: add a new poll
 router.post('/', async (req, res, next) => {
   try {
-    const {question, answers, user} = req.body;
+    const { question, answers, user } = req.body;
     const result = await polls.addNew(question, answers, user);
     res.json({
       result,

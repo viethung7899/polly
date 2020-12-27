@@ -8,4 +8,10 @@ Creating polls and voting
 
 - [ ] Every people only vote once
 
-- [ ] Use ```formik``` and ```yup``` for all fields
+- [x] Use ```formik``` and ```yup``` for all fields
+
+- [ ] Delete the polls manually
+
+- [ ] Delete the polls automatically after 7 days
+
+- [ ] Poll result only can be seen after voting

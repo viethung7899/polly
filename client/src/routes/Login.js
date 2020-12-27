@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 
-import { Formik, useField } from 'formik';
+import { Formik } from 'formik';
 
 import { AuthContext } from '../contexts/AuthContext';
 import Button from '../components/Button';
-import InputField from '../components/InputField';
+import InputFieldWithLabel from '../components/InputFieldWithLabel';
+import { ErrorNotification } from '../components/Notification';
 
 // Validation schema
 const validationSchema = yup.object({
@@ -26,6 +27,10 @@ const validationSchema = yup.object({
 });
 
 const Login = () => {
+  const { login, register } = useContext(AuthContext);
+  const history = useHistory();
+  const [error, setError] = useState(null);
+
   return (
     <section className="hero is-primary is-bold is-fullheight-with-navbar">
       <div className="hero-body">
@@ -40,10 +45,24 @@ const Login = () => {
             }}
             validateOnChange={true}
             validationSchema={validationSchema}
-            onSubmit={(data, { setSubmitting }) => {
+            onSubmit={(values, { setSubmitting }) => {
               setSubmitting(true);
-              console.log(data);
-              setSubmitting(false);
+              const { username, password } = values;
+              let action;
+              if (values.loginMode) action = login(username, password);
+              else action = register(username, password);
+              action
+                .then(() => {
+                  setError(null);
+                  history.push('/');
+                })
+                .catch((err) => {
+                  let message = 'Oops... Cannot reach to the server';
+                  if (err.response)
+                    message = 'Oops... ' + err.response.data.message;
+                  setError(message);
+                })
+                .finally(() => setSubmitting(false));
             }}
           >
             {({ values, handleSubmit, isSubmitting, setValues }) => (
@@ -52,19 +71,20 @@ const Login = () => {
                   {values.loginMode ? 'Log in' : 'Register'}
                 </h1>
                 <div className="has-background-white p-4">
+                  {error && <ErrorNotification title={error} />}
                   <form onSubmit={handleSubmit}>
-                    <InputField
+                    <InputFieldWithLabel
                       name="username"
                       type="text"
                       icon="fas fa-user"
                     />
-                    <InputField
+                    <InputFieldWithLabel
                       name="password"
                       type="password"
                       icon="fas fa-key"
                     />
                     {!values.loginMode && (
-                      <InputField
+                      <InputFieldWithLabel
                         name="confirmPassword"
                         type="password"
                         icon="fas fa-key"
@@ -82,17 +102,18 @@ const Login = () => {
                           !values.loginMode ? 'log in' : 'register'
                         }`}
                         type="is-light"
-                        action={() =>
+                        action={() => {
                           setValues({
-                            ...values,
-                            loginMode: !values.loginMode,
+                            username: '',
+                            password: '',
                             confirmPassword: '',
-                          })
-                        }
+                            loginMode: !values.loginMode,
+                          });
+                          setError(null);
+                        }}
                         disabled={isSubmitting}
                       />
                     </div>
-                    <pre>{JSON.stringify(values, null, 2)}</pre>
                   </form>
                 </div>
               </div>

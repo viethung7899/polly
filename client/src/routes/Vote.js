@@ -5,9 +5,9 @@ import { PollContext } from '../contexts/PollContext';
 
 import Banner from '../components/Banner';
 import Button from '../components/Button';
-import Answer from '../components/Answer';
+import AnswerButton from '../components/AnswerButton';
 import IDField from '../components/IDField';
-import Notification from '../components/Notification';
+import Notification, { ErrorNotification } from '../components/Notification';
 
 const Vote = () => {
   const { token, selected, getPollById, vote, resetSelection } = useContext(
@@ -25,12 +25,17 @@ const Vote = () => {
     if (!id || !token) return;
     setLoading(true);
     getPollById(id)
-      .catch((err) => setError(err.message))
+      .catch((err) => {
+        let message = 'Oops... Cannot reach to the server';
+        if (err.response) message = 'Oops... ' + err.response.data.message;
+        setError(message);
+      })
       .finally(() => setLoading(false));
     return () => {
       resetSelection();
       setAnswerID(-1);
       setVoted(false);
+      setError(null);
     };
   }, [id, token]);
 
@@ -48,6 +53,8 @@ const Vote = () => {
       .finally(() => setLoading(false));
   };
 
+  const validationSchema = null;
+
   return (
     <>
       <Banner title="Vote">
@@ -63,7 +70,7 @@ const Vote = () => {
       <div className="container is-fluid">
         {/* Enter the selected ID */}
         {!selected && <IDField loading={loading} />}
-        {error && <Notification title={error} type="is-danger" />}
+        {error && <ErrorNotification title={error} />}
         {selected && !error && (
           <section className="mt-6">
             <div className="level">
@@ -83,7 +90,7 @@ const Vote = () => {
             <div className="options">
               {selected.answers.map((answer, index) => {
                 return (
-                  <Answer
+                  <AnswerButton
                     key={index}
                     title={answer.answer}
                     selected={index === answerID}

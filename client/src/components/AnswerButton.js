@@ -1,4 +1,4 @@
-const Answer = ({ title, selected, action, children }) => {
+const AnswerButton = ({ title, selected, action, children }) => {
   const type = selected ? 'is-success' : '';
   return (
     <div className="is-full my-2" onClick={action}>
@@ -10,4 +10,4 @@ const Answer = ({ title, selected, action, children }) => {
   );
 };
 
-export default Answer;
+export default AnswerButton;

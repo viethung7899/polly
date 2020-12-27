@@ -3,7 +3,7 @@ import { useHistory, useParams, Redirect } from 'react-router-dom';
 
 import Banner from '../components/Banner';
 import Button from '../components/Button';
-import Answer from '../components/Answer';
+import AnswerButton from '../components/AnswerButton';
 
 import { PollContext } from '../contexts/PollContext';
 
@@ -19,7 +19,9 @@ const getMajority = (poll) => {
 };
 
 const Result = () => {
-  const { token, selected, getPollById, resetSelection } = useContext(PollContext);
+  const { token, selected, getPollById, resetSelection } = useContext(
+    PollContext
+  );
   const { id } = useParams();
   const history = useHistory();
   const [majority, setMajority] = useState(null);
@@ -55,13 +57,13 @@ const Result = () => {
             <h1 className="title is-1">{selected.question}</h1>
             {selected.answers.map((answer, index) => {
               return (
-                <Answer
+                <AnswerButton
                   key={index}
                   title={answer.answer}
                   selected={majority === answer}
                 >
                   {answer.count}
-                </Answer>
+                </AnswerButton>
               );
             })}
           </section>

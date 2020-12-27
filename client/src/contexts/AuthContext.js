@@ -11,15 +11,16 @@ export const AuthContext = createContext();
 const AuthContextProvider = ({ children }) => {
   const [token, setToken] = useState('');
 
-  const logIn = async (username, password) => {
+  const login = (username, password) => {
     console.log('Logging in...');
     return auth
       .post('/login', {
         username: username,
         password: password,
       })
-      .then((res) => {
+      .then((res, reject) => {
         if (res.status === 200) setToken(res.data.token);
+        else reject(new Error('Something is wrong'));
       });
   };
 
@@ -29,8 +30,9 @@ const AuthContextProvider = ({ children }) => {
         username,
         password,
       })
-      .then((res) => {
+      .then((res, reject) => {
         if (res.status === 200) setToken(res.data.token);
+        else reject(new Error('Something is wrong'));
       });
   };
 
@@ -52,7 +54,7 @@ const AuthContextProvider = ({ children }) => {
   });
 
   return (
-    <AuthContext.Provider value={{ token, logIn, logOut, register }}>
+    <AuthContext.Provider value={{ token, login, logOut, register }}>
       {children}
     </AuthContext.Provider>
   );

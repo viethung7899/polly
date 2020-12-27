@@ -12,7 +12,7 @@ const Button = (props) => {
           <i className={icon}></i>
         </span>
       ) : null}
-      <span>{title}</span>
+      {title && <span>{title}</span>}
     </button>
   );
 };
