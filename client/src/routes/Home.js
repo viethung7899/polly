@@ -15,14 +15,11 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    return () => {
-      console.log('Leaving from home...');
-    };
-  }, []);
-
-  useEffect(() => {
-    console.log('Update home', token.length);
-    if (token) fetchPolls().catch((err) => setError('Oops...'));
+    setLoading(false);
+    if (token)
+      fetchPolls()
+        .catch((err) => setError('Oops...'))
+        .finally(() => setLoading(false));
   }, [token]);
 
   return (

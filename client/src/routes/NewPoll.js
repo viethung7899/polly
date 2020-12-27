@@ -20,11 +20,10 @@ const copyPollURLForVoting = (submissionID) => {
 
   // Copy to clipboard
   copy(shareURL);
-}
-
+};
 
 const NewPoll = () => {
-  const {addNewPoll} = useContext(PollContext);
+  const { addNewPoll } = useContext(PollContext);
   const history = useHistory();
   const [loading, setLoading] = useState(false);
 
@@ -80,7 +79,9 @@ const NewPoll = () => {
       setLoading(false);
       return;
     }
-    addNewPoll(question, answers).then(id => setSubmissionID(id)).catch(console.log);
+    addNewPoll(question, answers)
+      .then((id) => setSubmissionID(id))
+      .catch(console.log);
   };
 
   return (

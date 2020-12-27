@@ -30,14 +30,11 @@ const Result = () => {
       getPollById(id)
         .then((poll) => setMajority(getMajority(poll)))
         .catch(setError);
-  }, [id, token]);
-
-  useEffect(() => {
     return () => {
       setMajority(null);
       resetSelection();
     };
-  }, []);
+  }, [id, token]);
 
   return (
     <>
