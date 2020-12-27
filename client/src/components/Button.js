@@ -5,6 +5,7 @@ const Button = (props) => {
       className={`button ${type} ${loading ? 'is-loading' : ''}`}
       onClick={action}
       disabled={disabled}
+      type="button"
     >
       {icon ? (
         <span className="icon">
