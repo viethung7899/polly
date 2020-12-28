@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
 
 const auth = axios.create({
-  baseURL: `${process.env.API_URL}/auth`,
+  baseURL: `${process.env.REACT_APP_API_URL}/auth`,
   responseType: 'json',
 });
 
@@ -10,9 +10,9 @@ export const AuthContext = createContext();
 
 const AuthContextProvider = ({ children }) => {
   const [token, setToken] = useState('');
+  console.log({...process.env})
 
   const login = (username, password) => {
-    console.log('Logging in...');
     return auth
       .post('/login', {
         username: username,

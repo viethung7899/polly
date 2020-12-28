@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+
 import { AuthContext } from './AuthContext';
 
 export const PollContext = createContext();
@@ -11,7 +12,7 @@ const PollContextProvider = ({ children }) => {
   const [selected, setSelected] = useState(null);
 
   const api = axios.create({
-    baseURL: `${process.env.API_URL}/api`,
+    baseURL: `${process.env.REACT_APP_API_URL}/api`,
     responseType: 'json',
     headers: {
       Authorization: 'Bearer ' + token,
