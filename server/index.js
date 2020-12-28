@@ -9,7 +9,10 @@ const authRoute = require('./routes/auth');
 
 app = express();
 
-mongoose.connect('mongodb://localhost:27017/polly', {
+const connectionURI =
+  process.env.MONOGODB_URI || 'mongodb://localhost:27017/polly';
+
+mongoose.connect(connectionURI, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
 });
@@ -35,9 +38,8 @@ app.use('/api', apiRoute);
 // 404 middleware
 app.use((req, res, next) => {
   res.status(404);
-  next(new Error('Not found'))
-})
-
+  next(new Error('Not found'));
+});
 
 // Error handling middleware
 app.use((error, req, res, next) => {
