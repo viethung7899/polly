@@ -114,7 +114,7 @@ const NewPoll = () => {
               <hr />
               {/* Control button */}
               <div className="buttons is-right">
-                <TimeSelector name="duration" />
+                {/* <TimeSelector name="duration" /> */}
                 <Button
                   title="Add another answer"
                   type="is-info"

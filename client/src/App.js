@@ -25,12 +25,12 @@ const App = () => {
         <Navbar />
         <PollContextProvider>
           <Switch>
-            <Route path="/login" exact component={Login} />
             <ProtectedRoute path="/new" exact component={NewPoll} />
             <ProtectedRoute path="/vote/:id" exact component={Vote} />
             <ProtectedRoute path="/vote" exact component={Vote} />
             <ProtectedRoute path="/poll/:id" exact component={Poll} />
             <ProtectedRoute path="/" exact component={Home} />
+            <Route path="/login" exact component={Login} />
             <ProtectedRoute path="/not-found" exact component={NotFound} />
             <ProtectedRoute component={NotFound} />
           </Switch>
