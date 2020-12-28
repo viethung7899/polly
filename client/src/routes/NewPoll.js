@@ -7,6 +7,7 @@ import Banner from '../components/Banner';
 import Button from '../components/Button';
 import Notification, { ErrorNotification } from '../components/Notification';
 import InputField from '../components/InputField';
+import TimeSelector from '../components/TimeSelector';
 
 import { PollContext } from '../contexts/PollContext';
 
@@ -54,6 +55,10 @@ const NewPoll = () => {
           initialValues={{
             question: '',
             answers: ['', ''],
+            duration: {
+              amount: 1,
+              unit: 'minutes',
+            },
           }}
           onSubmit={(values, { setSubmitting }) => {
             const { question, answers } = values;
@@ -109,6 +114,7 @@ const NewPoll = () => {
               <hr />
               {/* Control button */}
               <div className="buttons is-right">
+                <TimeSelector name="duration" />
                 <Button
                   title="Add another answer"
                   type="is-info"
