@@ -11,7 +11,7 @@ const PollContextProvider = ({ children }) => {
   const [selected, setSelected] = useState(null);
 
   const api = axios.create({
-    baseURL: 'http://localhost:5000/api',
+    baseURL: `${process.env.API_URL}/api`,
     responseType: 'json',
     headers: {
       Authorization: 'Bearer ' + token,

@@ -27,3 +27,6 @@ yarn-error.log*
 .eslintcache
 
 data.js
+
+# Enviroment variables
+.env*

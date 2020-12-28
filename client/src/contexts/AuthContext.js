@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
 
 const auth = axios.create({
-  baseURL: 'http://localhost:5000/auth',
+  baseURL: `${process.env.API_URL}/auth`,
   responseType: 'json',
 });
 
