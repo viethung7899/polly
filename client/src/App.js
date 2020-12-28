@@ -1,5 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 
 import './App.css';
@@ -31,8 +36,8 @@ const App = () => {
             <ProtectedRoute path="/poll/:id" exact component={Poll} />
             <ProtectedRoute path="/" exact component={Home} />
             <Route path="/login" exact component={Login} />
-            <ProtectedRoute path="/not-found" exact component={NotFound} />
-            <ProtectedRoute component={NotFound} />
+            <Route path="/not-found" exact component={NotFound} />
+            <Redirect to="/not-found" />
           </Switch>
         </PollContextProvider>
       </Router>
