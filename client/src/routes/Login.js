@@ -96,6 +96,7 @@ const Login = () => {
                         type="is-primary"
                         action={handleSubmit}
                         disabled={isSubmitting}
+                        loading={isSubmitting}
                       />
                       <Button
                         title={`Switch to ${

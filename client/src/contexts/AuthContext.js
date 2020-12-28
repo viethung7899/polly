@@ -10,7 +10,6 @@ export const AuthContext = createContext();
 
 const AuthContextProvider = ({ children }) => {
   const [token, setToken] = useState('');
-  console.log({...process.env})
 
   const login = (username, password) => {
     return auth
