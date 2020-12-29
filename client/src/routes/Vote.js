@@ -5,7 +5,6 @@ import { PollContext } from '../contexts/PollContext';
 
 import Banner from '../components/Banner';
 import Button from '../components/Button';
-import AnswerButton from '../components/AnswerButton';
 import IDField from '../components/IDField';
 import Notification, { ErrorNotification } from '../components/Notification';
 import VoteDisplay from '../components/VoteDisplay';
@@ -76,7 +75,7 @@ const Vote = () => {
         {voted ? (
           <Notification
             title="Thank you for your submission"
-            type="is-success is-light"
+            type="is-success"
           >
             <Button
               title="View result"

@@ -3,23 +3,9 @@ import { useHistory, useParams, Redirect } from 'react-router-dom';
 
 import Banner from '../components/Banner';
 import Button from '../components/Button';
-import AnswerButton from '../components/AnswerButton';
 import VoteDisplay from '../components/VoteDisplay';
 
-import useStatus from '../hooks/useStatus';
-
 import { PollContext } from '../contexts/PollContext';
-
-// Get majority from the poll
-const getMajority = (poll) => {
-  if (poll.answers.length < 2) return null;
-  let majority = poll.answers[0];
-  for (const answer of poll.answers) {
-    if (answer.count > majority.count) majority = answer;
-  }
-  if (majority.count === 0) return null;
-  return majority;
-};
 
 const Result = () => {
   const { token, selected, getPollById, resetSelection } = useContext(
@@ -27,17 +13,11 @@ const Result = () => {
   );
   const { id } = useParams();
   const history = useHistory();
-  const [majority, setMajority] = useState(null);
   const [error, setError] = useState(null);
-  const status = useStatus(selected);
 
   useEffect(() => {
-    if (token)
-      getPollById(id)
-        .then((poll) => setMajority(getMajority(poll)))
-        .catch(setError);
+    if (token) getPollById(id).catch(setError);
     return () => {
-      setMajority(null);
       resetSelection();
     };
   }, [id, token]);
@@ -57,43 +37,6 @@ const Result = () => {
         {!selected && <div>Loading...</div>}
         {selected && <VoteDisplay poll={selected} mode="view" />}
       </div>
-      {/* <div className="container is-fluid mt-6">
-        {!selected ? (
-          'Loading...'
-        ) : (
-          <section className="mt-6">
-            <div className="level">
-              <div className="level-left">
-                <h1 className="title is-1">{selected.question}</h1>
-              </div>
-              <div className="level-right">
-                <button
-                  className={`button is-${status.style} is-small is-light`}
-                  style={{
-                    pointerEvents:
-                      'none',
-                    boxShadow: 'none',
-                  }}
-                >
-                  {status.message.toUpperCase()}
-                </button>
-              </div>
-            </div>
-
-            {selected.answers.map((answer, index) => {
-              return (
-                <AnswerButton
-                  key={index}
-                  title={answer.answer}
-                  selected={majority === answer}
-                >
-                  {answer.count}
-                </AnswerButton>
-              );
-            })}
-          </section>
-        )}
-      </div> */}
     </>
   );
 };
