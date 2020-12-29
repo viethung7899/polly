@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 
 import { Formik } from 'formik';
@@ -26,10 +26,17 @@ const validationSchema = yup.object({
   }),
 });
 
-const Login = () => {
-  const { login, register } = useContext(AuthContext);
+const Login = ({ location }) => {
+  const { token, login, register } = useContext(AuthContext);
   const history = useHistory();
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(
+    location.state ? location.state.errorMessage : null
+  );
+
+  // Redirect to main page if logged in
+  if (token) {
+    return <Redirect to="/" />;
+  }
 
   return (
     <section className="hero is-primary is-bold is-fullheight-with-navbar">
@@ -54,7 +61,9 @@ const Login = () => {
               action
                 .then(() => {
                   setError(null);
-                  history.push('/');
+                  if (location.state && location.state.from) {
+                    history.push(location.state.from.pathname);
+                  } else history.push('/');
                 })
                 .catch((err) => {
                   let message = 'Oops... Cannot reach to the server';
