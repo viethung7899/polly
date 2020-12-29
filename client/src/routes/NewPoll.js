@@ -34,7 +34,7 @@ const NewPoll = () => {
 
   const validateSchema = yup.object({
     question: yup.string().required('Question is required'),
-    answers: yup.array().of(yup.string().required('AnswerButton is required')),
+    answers: yup.array().of(yup.string().required('Answer is required')),
   });
 
   return (
@@ -96,7 +96,7 @@ const NewPoll = () => {
                       <InputField
                         key={index}
                         name={`answers.${index}`}
-                        placeholder={`AnswerButton`}
+                        placeholder="Answer"
                         disabled={isSubmitting || submissionID}
                         button={{
                           type: 'is-danger',
