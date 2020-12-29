@@ -8,8 +8,9 @@ const answerSchema = new mongoose.Schema({
 const pollSchema = new mongoose.Schema({
   question: { type: String, required: true },
   answers: [answerSchema],
-  authorId: {type: String, required: true},
-  date: { type: Date, default: Date.now },
+  authorId: { type: String, required: true },
+  created: Date,
+  expired: Date,
 });
 
 const Poll = mongoose.model('Poll', pollSchema);

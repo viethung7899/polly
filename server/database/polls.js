@@ -1,15 +1,19 @@
+const moment = require('moment');
 const Poll = require('../models/Poll');
 
 const polls = {
-  findByAuthor: async (authorId) => await Poll.find({authorId}).sort({ date: -1 }).exec(),
+  findByAuthor: async (authorId) =>
+    await Poll.find({ authorId }).sort({ created: -1 }).exec(),
 
   findOne: async (id) => await Poll.findById(id).exec(),
 
-  addNew: async (question, answers, user) => {
+  addNew: async (question, answers, user, duration) => {
     const newPoll = new Poll({
       question,
       authorId: user._id,
       answers: [],
+      created: moment().toDate(),
+      expired: moment().add(+duration.amount, duration.unit).toDate(),
     });
     answers.forEach((answer) => {
       newPoll.answers.push({ answer });

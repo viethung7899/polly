@@ -71,8 +71,8 @@ router.get('/', async (req, res, next) => {
 // TODO: add a new poll
 router.post('/', async (req, res, next) => {
   try {
-    const { question, answers, user } = req.body;
-    const result = await polls.addNew(question, answers, user);
+    const { question, answers, user, duration } = req.body;
+    const result = await polls.addNew(question, answers, user, duration);
     res.json({
       result,
     });
