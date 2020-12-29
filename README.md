@@ -4,9 +4,11 @@ Creating polls and voting
 
 ## To-do list
 
-- [ ] Add timed polls
+- [x] Add timed polls
 
-- [ ] Every people only vote once
+- [x] Cast vote in time
+
+- [ ] You only vote once
 
 - [x] Use ```formik``` and ```yup``` for all fields
 
