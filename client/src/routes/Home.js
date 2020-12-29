@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import moment from 'moment';
 
 import { PollContext } from '../contexts/PollContext';
 
 import Button from '../components/Button';
 import Banner from '../components/Banner';
 import Notification from '../components/Notification';
+import Row from '../components/Row';
 
 const Home = () => {
   const history = useHistory();
@@ -71,23 +71,11 @@ const Home = () => {
                   <tr>
                     <th>Question</th>
                     <th>Created</th>
-                    <th>Progress</th>
+                    <th>Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {polls.map((poll) => {
-                    return (
-                      <tr
-                        key={poll._id}
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => history.push(`/poll/${poll._id}`)}
-                      >
-                        <td>{poll.question}</td>
-                        <td>{moment(poll.date).calendar()}</td>
-                        <td className="has-text-success">Vote in progress</td>
-                      </tr>
-                    );
-                  })}
+                  {polls.map((poll) => <Row key={poll._id} poll={poll} />)}
                 </tbody>
               </table>
             </>

@@ -4,6 +4,9 @@ import { useHistory, useParams, Redirect } from 'react-router-dom';
 import Banner from '../components/Banner';
 import Button from '../components/Button';
 import AnswerButton from '../components/AnswerButton';
+import VoteDisplay from '../components/VoteDisplay';
+
+import useStatus from '../hooks/useStatus';
 
 import { PollContext } from '../contexts/PollContext';
 
@@ -26,6 +29,7 @@ const Result = () => {
   const history = useHistory();
   const [majority, setMajority] = useState(null);
   const [error, setError] = useState(null);
+  const status = useStatus(selected);
 
   useEffect(() => {
     if (token)
@@ -50,11 +54,32 @@ const Result = () => {
         />
       </Banner>
       <div className="container is-fluid mt-6">
+        {!selected && <div>Loading...</div>}
+        {selected && <VoteDisplay poll={selected} mode="view" />}
+      </div>
+      {/* <div className="container is-fluid mt-6">
         {!selected ? (
           'Loading...'
         ) : (
           <section className="mt-6">
-            <h1 className="title is-1">{selected.question}</h1>
+            <div className="level">
+              <div className="level-left">
+                <h1 className="title is-1">{selected.question}</h1>
+              </div>
+              <div className="level-right">
+                <button
+                  className={`button is-${status.style} is-small is-light`}
+                  style={{
+                    pointerEvents:
+                      'none',
+                    boxShadow: 'none',
+                  }}
+                >
+                  {status.message.toUpperCase()}
+                </button>
+              </div>
+            </div>
+
             {selected.answers.map((answer, index) => {
               return (
                 <AnswerButton
@@ -68,7 +93,7 @@ const Result = () => {
             })}
           </section>
         )}
-      </div>
+      </div> */}
     </>
   );
 };

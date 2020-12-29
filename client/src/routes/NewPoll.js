@@ -61,8 +61,8 @@ const NewPoll = () => {
             },
           }}
           onSubmit={(values, { setSubmitting }) => {
-            const { question, answers } = values;
-            addNewPoll(question, answers)
+            const { question, answers, duration } = values;
+            addNewPoll(question, answers, duration)
               .then((id) => {
                 setSubmissionID(id);
                 setError(null);
@@ -94,6 +94,7 @@ const NewPoll = () => {
                   values.answers.map((answer, index) => {
                     return (
                       <InputField
+                        key={index}
                         name={`answers.${index}`}
                         placeholder={`AnswerButton`}
                         disabled={isSubmitting || submissionID}
@@ -114,7 +115,7 @@ const NewPoll = () => {
               <hr />
               {/* Control button */}
               <div className="buttons is-right">
-                {/* <TimeSelector name="duration" /> */}
+                <TimeSelector name="duration" />
                 <Button
                   title="Add another answer"
                   type="is-info"

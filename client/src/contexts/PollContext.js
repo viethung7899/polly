@@ -36,8 +36,8 @@ const PollContextProvider = ({ children }) => {
   }, []);
 
   // Add new poll
-  const addNewPoll = (question, answers) => {
-    return api.post('/', { question, answers }).then((res, reject) => {
+  const addNewPoll = (question, answers, duration) => {
+    return api.post('/', { question, answers, duration }).then((res, reject) => {
       if (res.status === 200) return res.data.result._id;
       else reject(new Error('Oops... Something is wrong'));
     });

@@ -1,7 +1,7 @@
 import { useField } from 'formik';
 
 const options = {
-  minutes: [1, 5, 10, 20, 30, 45],
+  minutes: [1, 2, 5, 10, 20, 30, 45],
   hours: [1, 2, 3, 4, 6, 9, 12, 18],
   days: [1, 2, 3, 4, 6],
 };
@@ -11,9 +11,9 @@ const TimeSelector = (props) => {
   const { value, onChange, onBlur } = field;
 
   return (
-    <div class="field has-addons mt-1 mx-1">
-      <div class="control has-icons-left">
-        <div class="select">
+    <div className="field has-addons mt-1 mx-1">
+      <div className="control has-icons-left">
+        <div className="select">
           <select name="duration.amount" onChange={onChange} onBlur={onBlur}>
             {options[value.unit].map((amount) => (
               <option value={amount} selected={amount === +value.amount}>
@@ -22,13 +22,13 @@ const TimeSelector = (props) => {
             ))}
           </select>
         </div>
-        <div class="icon is-small is-left">
-          <i class="fas fa-clock"></i>
+        <div className="icon is-small is-left">
+          <i className="fas fa-clock"></i>
         </div>
       </div>
 
-      <div class="control">
-        <span class="select">
+      <div className="control">
+        <span className="select">
           <select
             name="duration.unit"
             onChange={(e) => {

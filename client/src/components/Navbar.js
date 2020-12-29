@@ -29,7 +29,7 @@ const Navbar = () => {
           <h1 className="title is-4 ml-2 has-text-primary">Polly</h1>
         </div>
 
-        <a
+        <div
           onClick={() => setIsActive(!isActive)}
           role="button"
           className={`navbar-burger burger ${isActive ? 'is-active' : ''}`}
@@ -39,7 +39,7 @@ const Navbar = () => {
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
-        </a>
+        </div>
       </div>
       <div className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
         <div className="navbar-end">
