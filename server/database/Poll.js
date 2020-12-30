@@ -1,6 +1,7 @@
 const pg = require('./connection');
+const moment = require('moment');
 
-const polls = {
+const Poll = {
   findByAuthor: async (authorId) => {
     console.log('From poll.js line 6', authorId);
     return await pg
@@ -17,9 +18,22 @@ const polls = {
     return result[0];
   },
 
-  addNew: async (question, answers, user, duration) => { },
+  addNewPoll: async (question, duration, user) => {
+    created = moment().toDate();
+    expired = moment().add(duration.amount, duration.unit).toDate();
+    const result = await pg('polls').insert(
+      {
+        question,
+        userID: user.userID,
+        created,
+        expired,
+      },
+      ['pollID']
+    );
+    return result[0].pollID;
+  },
 
   vote: async (pollId, answerID) => {},
 };
 
-module.exports = polls;
+module.exports = Poll;

@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const users = require('../database/users');
+const User = require('../database/User');
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ const router = express.Router();
 router.post('/login', async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    const result = await users.findOneByUsername(username);
+    const result = await User.findOneByUsername(username);
 
     // Not found
     if (result.length <= 0) {
@@ -43,7 +43,7 @@ router.post('/login', async (req, res, next) => {
 router.post('/register', async (req, res, next) => {
   try {
     const { name, username, password } = req.body;
-    const user = await users.findOneByUsername(username);
+    const user = await User.findOneByUsername(username);
     console.log('From register', user);
 
     // User already existed
@@ -55,7 +55,7 @@ router.post('/register', async (req, res, next) => {
     // Save user into database
     const hashPassword = await bcrypt.hash(password, 10);
     console.log(hashPassword);
-    const savedUser = await users.createNewUser(name, username, hashPassword);
+    const savedUser = await User.createNewUser(name, username, hashPassword);
 
     // Tokenize user
     const token = jwt.sign({ ...savedUser }, process.env.TOKEN_SECRET);

@@ -1,7 +1,10 @@
 const express = require('express');
-const polls = require('../database/polls');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+
+const Poll = require('../database/Poll');
+const Answer = require('../database/Answer');
+const Vote = require('../database/Vote');
 
 const router = express.Router();
 
@@ -36,33 +39,68 @@ router.use(async (req, res, next) => {
   next();
 });
 
-router.post('/vote', async (req, res, next) => {});
+// Cast a vote to a poll
+router.post('/vote', async (req, res, next) => {
+  const { pollID, answerID, user } = req.body;
+  try {
+    // Check if the user vote
+    const found = await Vote.findVote(pollID, user.userID);
+    if (found.length > 0) {
+      res.status(403);
+      throw new Error('You only vote once');
+    }
 
+    // Cast the vote
+    await Answer.addVote(answerID);
+
+    // Add vote record
+    const voteID = await Vote.addVote(pollID, user.userID);
+    // Return the voteID
+    res.status(200).json({ voteID });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Get all polls from the users
 router.get('/', async (req, res, next) => {
   try {
     const userId = req.body.user.userID;
-    const result = await polls.findByAuthor(userId);
-    res.json({
-      result,
-    });
+    const polls = await Poll.findByAuthor(userId);
+    res.status(200).json({ polls });
   } catch (error) {
-    next(new Error('Not found'));
+    res.status(404);
+    next(error);
   }
 });
 
+// Get one poll by id with full detail
 router.get('/:id', async (req, res, next) => {
   try {
     const id = req.params.id;
-    const result = await polls.findOne(id);
-    res.json({
-      result,
-    });
+    const poll = await Poll.findOne(id);
+    const answers = await Answer.getAnswersFromPoll(poll.pollID);
+    res.status(200).json({ ...poll, answers });
   } catch (error) {
-    next(new Error('Not found'));
+    next(error);
   }
 });
 
-// TODO: add a new poll
-router.post('/', async (req, res, next) => {});
+// Add a new poll
+router.post('/', async (req, res, next) => {
+  const { question, answers, duration, user } = req.body;
+  try {
+    // Add poll and question
+    const pollID = await Poll.addNewPoll(question, duration, user);
+    console.log(pollID);
+    answers.forEach(async (answer) => {
+      await Answer.addAnswer(pollID, answer);
+    });
+    res.status(200).json({ pollID });
+    // Add answers
+  } catch (error) {
+    next(new Error('Unsucessful'));
+  }
+});
 
 module.exports = router;

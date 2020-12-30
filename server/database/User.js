@@ -1,6 +1,6 @@
 const pg = require('./connection');
 
-const users = {
+const User = {
   findOneByUsername: async (username) => {
     return await pg.select().from('users').where('username', username);
   },
@@ -10,4 +10,4 @@ const users = {
   },
 };
 
-module.exports = users;
+module.exports = User;
