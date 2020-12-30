@@ -11,13 +11,15 @@ const router = express.Router();
 router.post('/login', async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    const user = await users.findOneByUsername(username);
+    const result = await users.findOneByUsername(username);
 
     // Not found
-    if (!user) {
+    if (result.length <= 0) {
       res.status(404);
       throw new Error('User not found');
     }
+
+    const user = result[0];
 
     // Wrong password
     const matched = await bcrypt.compare(password, user.hashPassword);
@@ -40,20 +42,21 @@ router.post('/login', async (req, res, next) => {
 // TODO: sign out
 router.post('/register', async (req, res, next) => {
   try {
-    const { username, password } = req.body;
+    const { name, username, password } = req.body;
     const user = await users.findOneByUsername(username);
-    console.log(user);
+    console.log('From register', user);
 
     // User already existed
-    if (user) {
+    if (user.length !== 0) {
       res.status(409);
       throw new Error('Username is already existed');
     }
 
     // Save user into database
     const hashPassword = await bcrypt.hash(password, 10);
-    const savedUser = await users.createNewUser(username, hashPassword);
-    
+    console.log(hashPassword);
+    const savedUser = await users.createNewUser(name, username, hashPassword);
+
     // Tokenize user
     const token = jwt.sign({ ...savedUser }, process.env.TOKEN_SECRET);
     res.status(200).json({

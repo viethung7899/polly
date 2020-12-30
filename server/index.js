@@ -2,20 +2,11 @@ const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const cors = require('cors');
-const mongoose = require('mongoose');
 
 const apiRoute = require('./routes/api');
 const authRoute = require('./routes/auth');
 
 app = express();
-
-const connectionURI =
-  process.env.MONOGODB_URI || 'mongodb://localhost:27017/polly';
-
-mongoose.connect(connectionURI, {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-});
 
 // Middlewares
 app.use(helmet());
@@ -23,12 +14,12 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
 
-// // Logger
-// app.use((req, res, next) => {
-//   console.log(req.headers);
-//   console.log(req.body);
-//   next();
-// })
+// Logger
+app.use((req, res, next) => {
+  console.log(req.headers);
+  console.log(req.body);
+  next();
+});
 
 // Authenticate route
 app.use('/auth', authRoute);
@@ -44,6 +35,7 @@ app.use((req, res, next) => {
 // Error handling middleware
 app.use((error, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  console.log(error.stack);
   res.status(statusCode).json({
     message: error.message,
     stack: process.env.NODE_ENV === 'production' ? '🥞' : error.stack,

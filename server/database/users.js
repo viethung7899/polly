@@ -1,15 +1,13 @@
-const { findById } = require('../models/User');
-const User = require('../models/User');
+const pg = require('./connection');
 
 const users = {
   findOneByUsername: async (username) => {
-    return await User.findOne({username: username})
+    return await pg.select().from('users').where('username', username);
   },
 
-  createNewUser: async (username, hashPassword) => {
-    const newUser = new User({username, hashPassword});
-    return await newUser.save();
-  }
-}
+  createNewUser: async (name, username, hashPassword) => {
+    return await pg('users').insert({ name, username, hashPassword });
+  },
+};
 
 module.exports = users;
