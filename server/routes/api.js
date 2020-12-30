@@ -21,7 +21,7 @@ router.use(async (req, res, next) => {
         res.status(403);
         throw new Error('Not authorized');
       } else {
-        req.body['user'] = payload._doc;
+        req.body['user'] = payload;
         next();
       }
     });
@@ -30,36 +30,30 @@ router.use(async (req, res, next) => {
   }
 });
 
-// router.use(async (req, res, next) => {
-//   console.log(req.body);
-//   next();
-// });
+// Logger after authorization
+router.use(async (req, res, next) => {
+  console.log(req.body);
+  next();
+});
 
-// TODO: vote in a poll
-router.post('/vote', async (req, res, next) => {
-  const { pollID, answerID } = req.body;
+router.post('/vote', async (req, res, next) => {});
+
+router.get('/', async (req, res, next) => {
   try {
-    const result = await polls.vote(pollID, answerID);
-    res.status(200).json({
-      result: result,
+    const userId = req.body.user.userID;
+    const result = await polls.findByAuthor(userId);
+    res.json({
+      result,
     });
   } catch (error) {
-    next(error);
+    next(new Error('Not found'));
   }
 });
 
-// TODO; get all polls from user or get a poll by ID
-router.get('/', async (req, res, next) => {
-  const id = req.query.id;
-  let result = undefined;
-  const userId = req.body.user._id;
+router.get('/:id', async (req, res, next) => {
   try {
-    if (id) {
-      console.log(id);
-      result = await polls.findOne(id);
-    } else {
-      result = await polls.findByAuthor(userId);
-    }
+    const id = req.params.id;
+    const result = await polls.findOne(id);
     res.json({
       result,
     });
@@ -69,16 +63,6 @@ router.get('/', async (req, res, next) => {
 });
 
 // TODO: add a new poll
-router.post('/', async (req, res, next) => {
-  try {
-    const { question, answers, user, duration } = req.body;
-    const result = await polls.addNew(question, answers, user, duration);
-    res.json({
-      result,
-    });
-  } catch (error) {
-    next(error);
-  }
-});
+router.post('/', async (req, res, next) => {});
 
 module.exports = router;
