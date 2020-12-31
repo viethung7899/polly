@@ -14,12 +14,12 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
 
-// Logger
-app.use((req, res, next) => {
-  console.log(req.headers);
-  console.log(req.body);
-  next();
-});
+// // Logger
+// app.use((req, res, next) => {
+//   console.log(req.headers);
+//   console.log(req.body);
+//   next();
+// });
 
 // Authenticate route
 app.use('/auth', authRoute);

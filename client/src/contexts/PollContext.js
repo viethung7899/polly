@@ -22,7 +22,6 @@ const PollContextProvider = ({ children }) => {
   // Fetch polls according to the token
   const fetchPolls = () => {
     return api.get('/').then((res, reject) => {
-      console.log(res);
       if (res.status === 200) setPolls(res.data.polls);
       else reject(new Error('Oops... Something is wrong'));
     });

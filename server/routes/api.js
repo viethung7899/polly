@@ -33,11 +33,11 @@ router.use(async (req, res, next) => {
   }
 });
 
-// Logger after authorization
-router.use(async (req, res, next) => {
-  console.log(req.body);
-  next();
-});
+// // Logger after authorization
+// router.use(async (req, res, next) => {
+//   console.log(req.body);
+//   next();
+// });
 
 // Cast a vote to a poll
 router.post('/vote', async (req, res, next) => {
@@ -45,7 +45,7 @@ router.post('/vote', async (req, res, next) => {
   try {
     // Check if the user vote
     const found = await Vote.findVote(pollID, user.userID);
-    if (found.length > 0) {
+    if (found) {
       res.status(403);
       throw new Error('You only vote once');
     }

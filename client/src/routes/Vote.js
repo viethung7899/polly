@@ -41,7 +41,6 @@ const Vote = () => {
   }, [id, token]);
 
   const handleSubmit = (pollID, answerID) => {
-    console.log(pollID, answerID);
     return vote(pollID, answerID)
       .then(() => setVoted(true))
       .catch((err) => {

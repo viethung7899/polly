@@ -12,7 +12,7 @@ const Poll = {
 
   findOne: async (id) => {
     const result = await pg
-      .select('pollID', 'question', 'created', 'expired')
+      .select('pollID', 'question', 'created', 'expired', 'userID')
       .from('polls')
       .where('pollID', id);
     return result[0];

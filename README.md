@@ -2,6 +2,17 @@
 
 Creating polls and voting
 
+
+## Tech stack I used in this project
+
+- PostgreSQL
+
+- React with Hooks and Context
+
+- Express
+
+- NodeJS
+
 ## To-do list
 
 - [x] Add timed polls

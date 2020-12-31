@@ -75,7 +75,7 @@ const Home = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {polls.map((poll) => <Row key={poll._id} poll={poll} />)}
+                  {polls.map((poll) => <Row key={poll.pollID} poll={poll} />)}
                 </tbody>
               </table>
             </>

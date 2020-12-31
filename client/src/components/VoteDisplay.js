@@ -84,10 +84,7 @@ const VoteDisplay = ({ poll, mode, voteController }) => {
           <Button
             title="SUBMIT"
             type="is-success"
-            action={() => {
-              console.log(poll.pollID);
-              voteController.submit(poll.pollID, answerID);
-            }}
+            action={() => voteController.submit(poll.pollID, answerID)}
             disabled={voteController.voted || status === STATUS.CLOSED}
           />
         </div>
