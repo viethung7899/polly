@@ -8,7 +8,7 @@ import VoteDisplay from '../components/VoteDisplay';
 import { PollContext } from '../contexts/PollContext';
 
 const Result = () => {
-  const { token, selected, getPollById, resetSelection } = useContext(
+  const { token, selected, fetchPollById, resetSelection } = useContext(
     PollContext
   );
   const { id } = useParams();
@@ -16,7 +16,7 @@ const Result = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (token) getPollById(id).catch(setError);
+    if (token) fetchPollById(id).catch(setError);
     return () => {
       resetSelection();
     };

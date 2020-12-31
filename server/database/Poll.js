@@ -7,7 +7,7 @@ const Poll = {
     return await pg
       .select('pollID', 'question', 'created', 'expired')
       .from('polls')
-      .where('userID', authorId);
+      .where('userID', authorId).orderBy('created', 'desc');
   },
 
   findOne: async (id) => {

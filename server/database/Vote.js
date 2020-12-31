@@ -7,7 +7,8 @@ const Vote = {
   },
 
   findVote: async (pollID, userID) => {
-    return await pg('votes').select('voteID').where({pollID, userID});
+    const result =  await pg('votes').select('voteID').where({pollID, userID});
+    return result[0];
   }
 };
 

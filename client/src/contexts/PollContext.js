@@ -7,7 +7,7 @@ export const PollContext = createContext();
 
 const PollContextProvider = ({ children }) => {
   const authContext = useContext(AuthContext);
-  const {token} = authContext;
+  const { token } = authContext;
   const [polls, setPolls] = useState([]);
   const [selected, setSelected] = useState(null);
 
@@ -22,7 +22,8 @@ const PollContextProvider = ({ children }) => {
   // Fetch polls according to the token
   const fetchPolls = () => {
     return api.get('/').then((res, reject) => {
-      if (res.status === 200) setPolls(res.data.result);
+      console.log(res);
+      if (res.status === 200) setPolls(res.data.polls);
       else reject(new Error('Oops... Something is wrong'));
     });
   };
@@ -32,24 +33,26 @@ const PollContextProvider = ({ children }) => {
     return () => {
       setPolls([]);
       setSelected(null);
-    }
+    };
   }, []);
 
   // Add new poll
   const addNewPoll = (question, answers, duration) => {
-    return api.post('/', { question, answers, duration }).then((res, reject) => {
-      if (res.status === 200) return res.data.result._id;
-      else reject(new Error('Oops... Something is wrong'));
-    });
+    return api
+      .post('/', { question, answers, duration })
+      .then((res, reject) => {
+        if (res.status === 200) return res.data.pollID;
+        else reject(new Error('Oops... Something is wrong'));
+      });
   };
 
   // Get poll by id
-  const getPollById = (id) => {
+  const fetchPollById = (id) => {
     // Find in server
-    return api.get(`/?id=${id}`).then((res, reject) => {
+    return api.get(`/${id}`).then((res, reject) => {
       if (res.status === 200) {
-        setSelected(res.data.result);
-        return res.data.result;
+        setSelected(res.data);
+        return res.data;
       } else reject(new Error('Oops... Something is wrong'));
     });
   };
@@ -57,14 +60,14 @@ const PollContextProvider = ({ children }) => {
   // Vote
   const vote = (pollID, answerID) => {
     return api.post('/vote', { pollID, answerID }).then((res, reject) => {
-      if (res.status === 200) setSelected(res.data.result);
-      else reject(new Error('Oops... Something is wrong'));
+      if (res.status !== 200) reject(new Error('Oops... Something is wrong'));
+      else return;
     });
   };
 
   const resetSelection = () => {
     setSelected(null);
-  }
+  };
 
   return (
     <PollContext.Provider
@@ -74,9 +77,9 @@ const PollContextProvider = ({ children }) => {
         selected,
         fetchPolls,
         addNewPoll,
-        getPollById,
+        fetchPollById,
         vote,
-        resetSelection
+        resetSelection,
       }}
     >
       {children}

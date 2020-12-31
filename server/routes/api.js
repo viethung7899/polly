@@ -74,13 +74,16 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-// Get one poll by id with full detail
+// Get one poll by id with full details
 router.get('/:id', async (req, res, next) => {
   try {
+    const { user } = req.body;
     const id = req.params.id;
     const poll = await Poll.findOne(id);
     const answers = await Answer.getAnswersFromPoll(poll.pollID);
-    res.status(200).json({ ...poll, answers });
+    const voteID = await Vote.findVote(poll.pollID, user.userID);
+    console.log('Voted', voteID);
+    res.status(200).json({ ...poll, answers, voted: !!voteID });
   } catch (error) {
     next(error);
   }

@@ -3,14 +3,14 @@ import moment from 'moment';
 import useStatus from '../hooks/useStatus';
 
 const Row = ({ poll, onClick }) => {
-  const { _id, question, created } = poll;
+  const { pollID, question, created } = poll;
   const history = useHistory();
   const status = useStatus(poll);
 
   return (
     <tr
       style={{ cursor: 'pointer' }}
-      onClick={() => history.push(`/poll/${_id}`)}
+      onClick={() => history.push(`/poll/${pollID}`)}
     >
       <td>{question}</td>
       <td>{moment(created).calendar()}</td>

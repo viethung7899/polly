@@ -10,6 +10,7 @@ export const AuthContext = createContext();
 
 const AuthContextProvider = ({ children }) => {
   const [token, setToken] = useState('');
+  console.log(process.env.REACT_APP_API_URL);
 
   const login = (username, password) => {
     return auth
@@ -18,14 +19,16 @@ const AuthContextProvider = ({ children }) => {
         password: password,
       })
       .then((res, reject) => {
+        console.log(res);
         if (res.status === 200) setToken(res.data.token);
         else reject(new Error('Something is wrong'));
       });
   };
 
-  const register = async (username, password) => {
+  const register = async (name, username, password) => {
     return auth
       .post('/register', {
+        name,
         username,
         password,
       })

@@ -20,9 +20,10 @@ router.post('/login', async (req, res, next) => {
     }
 
     const user = result[0];
+    const {name, hashPassword} = user;
 
     // Wrong password
-    const matched = await bcrypt.compare(password, user.hashPassword);
+    const matched = await bcrypt.compare(password, hashPassword);
     if (!matched) {
       res.status(401);
       throw new Error('Wrong password');
@@ -31,6 +32,7 @@ router.post('/login', async (req, res, next) => {
     // Tokenize user
     const token = jwt.sign({ ...user }, process.env.TOKEN_SECRET);
     res.status(200).json({
+      name,
       username,
       token,
     });
@@ -60,6 +62,7 @@ router.post('/register', async (req, res, next) => {
     // Tokenize user
     const token = jwt.sign({ ...savedUser }, process.env.TOKEN_SECRET);
     res.status(200).json({
+      name,
       username,
       token,
     });

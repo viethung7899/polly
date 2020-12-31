@@ -12,6 +12,10 @@ import { ErrorNotification } from '../components/Notification';
 // Validation schema
 const validationSchema = yup.object({
   loginMode: yup.boolean(),
+  name: yup.string().when('loginMode', {
+    is: false,
+    then: yup.string().required('Name is required'),
+  }),
   username: yup.string().required('User is required').min(6, 'Too short'),
   password: yup
     .string()
@@ -46,6 +50,7 @@ const Login = ({ location }) => {
           <Formik
             initialValues={{
               loginMode: true,
+              name: '',
               username: '',
               password: '',
               confirmPassword: '',
@@ -54,10 +59,11 @@ const Login = ({ location }) => {
             validationSchema={validationSchema}
             onSubmit={(values, { setSubmitting }) => {
               setSubmitting(true);
-              const { username, password } = values;
+              const { name, username, password } = values;
+              console.log(values);
               let action;
               if (values.loginMode) action = login(username, password);
-              else action = register(username, password);
+              else action = register(name, username, password);
               action
                 .then(() => {
                   setError(null);
@@ -82,6 +88,11 @@ const Login = ({ location }) => {
                 <div className="has-background-white p-4">
                   {error && <ErrorNotification title={error} />}
                   <form onSubmit={handleSubmit}>
+                    {!values.loginMode && <InputFieldWithLabel
+                      name="name"
+                      type="text"
+                      icon="fas fa-user"
+                    />}
                     <InputFieldWithLabel
                       name="username"
                       type="text"
@@ -114,6 +125,7 @@ const Login = ({ location }) => {
                         type="is-light"
                         action={() => {
                           setValues({
+                            name: '',
                             username: '',
                             password: '',
                             confirmPassword: '',

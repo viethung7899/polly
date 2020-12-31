@@ -48,10 +48,10 @@ const VoteDisplay = ({ poll, mode, voteController }) => {
     };
   }, [poll, mode]);
 
-  const handleVote = (e, index) => {
+  const handleVote = (e, answer) => {
     e.preventDefault();
     if (mode === 'vote' && status !== STATUS.CLOSED) {
-      if (!voteController.voted) setAnswerID(index);
+      if (!voteController.voted) setAnswerID(answer.answerID);
     }
   };
 
@@ -70,9 +70,11 @@ const VoteDisplay = ({ poll, mode, voteController }) => {
               answer={answer}
               showResult={mode === 'view'}
               selected={
-                mode === 'view' ? answer === majority : index === answerID
+                mode === 'view'
+                  ? answer === majority
+                  : answer.answerID === answerID
               }
-              action={(e) => handleVote(e, index)}
+              action={(e) => handleVote(e, answer)}
             />
           );
         })}
@@ -82,7 +84,10 @@ const VoteDisplay = ({ poll, mode, voteController }) => {
           <Button
             title="SUBMIT"
             type="is-success"
-            action={() => voteController.submit(poll, answerID)}
+            action={() => {
+              console.log(poll.pollID);
+              voteController.submit(poll.pollID, answerID);
+            }}
             disabled={voteController.voted || status === STATUS.CLOSED}
           />
         </div>

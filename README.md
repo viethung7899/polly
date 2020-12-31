@@ -8,7 +8,7 @@ Creating polls and voting
 
 - [x] Cast vote in time
 
-- [ ] You only vote once
+- [x] You only vote once
 
 - [x] Use ```formik``` and ```yup``` for all fields
 

@@ -10,7 +10,7 @@ import Notification, { ErrorNotification } from '../components/Notification';
 import VoteDisplay from '../components/VoteDisplay';
 
 const Vote = () => {
-  const { token, selected, getPollById, vote, resetSelection } = useContext(
+  const { token, selected, fetchPollById, vote, resetSelection } = useContext(
     PollContext
   );
   const { id } = useParams();
@@ -23,8 +23,12 @@ const Vote = () => {
   useEffect(() => {
     if (!id || !token) return;
     setLoading(true);
-    getPollById(id)
+    fetchPollById(id)
+      .then((poll) => {
+        if (poll.voted) setError('You already voted');
+      })
       .catch((err) => {
+        console.log(err);
         let message = 'Oops... Cannot reach to the server';
         if (err.response) message = 'Oops... ' + err.response.data.message;
         setError(message);
@@ -36,11 +40,15 @@ const Vote = () => {
     };
   }, [id, token]);
 
-  const handleSubmit = (poll, answerID) => {
-    setLoading(true);
-    vote(poll._id, answerID)
+  const handleSubmit = (pollID, answerID) => {
+    console.log(pollID, answerID);
+    return vote(pollID, answerID)
       .then(() => setVoted(true))
-      .catch((err) => setError(err))
+      .catch((err) => {
+        let message = 'Oops... Cannot reach to the server';
+        if (err.response) message = 'Oops... ' + err.response.data.message;
+        setError(message);
+      })
       .finally(() => setLoading(false));
   };
 
@@ -58,9 +66,9 @@ const Vote = () => {
       </Banner>
       <div className="container is-fluid">
         {/* Enter the selected ID */}
-        {!selected && <IDField loading={loading} />}
+        {!selected || error && <IDField loading={loading} />}
         {error && <ErrorNotification title={error} />}
-        {selected && (
+        {!error && selected && (
           <VoteDisplay
             poll={selected}
             mode="vote"
@@ -73,10 +81,7 @@ const Vote = () => {
 
         {/* View result */}
         {voted ? (
-          <Notification
-            title="Thank you for your submission"
-            type="is-success"
-          >
+          <Notification title="Thank you for your submission" type="is-success">
             <Button
               title="View result"
               type="is-success is-outlined"
