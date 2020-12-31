@@ -66,7 +66,7 @@ const Vote = () => {
       </Banner>
       <div className="container is-fluid">
         {/* Enter the selected ID */}
-        {!selected || error && <IDField loading={loading} />}
+        {(!selected || error) && <IDField loading={loading} />}
         {error && <ErrorNotification title={error} />}
         {!error && selected && (
           <VoteDisplay

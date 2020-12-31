@@ -10,7 +10,7 @@ Creating polls and voting
 
 - [x] You only vote once
 
-- [x] Use ```formik``` and ```yup``` for all fields
+- [x] Use `formik` and `yup` for all fields
 
 - [ ] Delete the polls manually
 
