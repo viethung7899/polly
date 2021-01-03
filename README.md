@@ -1,17 +1,18 @@
-# Polly
+# [Polly](https://polly2.netlify.app/)
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/d88d89b6-f096-4eb6-bf98-06f1ccd03520/deploy-status)](https://app.netlify.com/sites/polly2/deploys)
 
 Creating polls and voting
 
+## Tech stack used in this project
 
-## Tech stack I used in this project
-
-- PostgreSQL
+- PostgreSQL for data storage
 
 - React with Hooks and Context
 
-- Express
+- Bulma CSS for layout
 
-- NodeJS
+- Express and NodeJS for back-end service
 
 ## To-do list
 
