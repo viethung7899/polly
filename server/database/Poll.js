@@ -3,7 +3,6 @@ const moment = require('moment');
 
 const Poll = {
   findByAuthor: async (authorId) => {
-    console.log('From poll.js line 6', authorId);
     return await pg
       .select('pollID', 'question', 'created', 'expired')
       .from('polls')

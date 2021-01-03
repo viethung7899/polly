@@ -3,7 +3,6 @@ const pg = require('./connection');
 const User = {
   findOneByUsername: async (username) => {
     const result = await pg('users').where('username', username);
-    console.log(result);
     return result[0];
   },
 

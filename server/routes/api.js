@@ -82,7 +82,6 @@ router.get('/:id', async (req, res, next) => {
     const poll = await Poll.findOne(id);
     const answers = await Answer.getAnswersFromPoll(poll.pollID);
     const voteID = await Vote.findVote(poll.pollID, user.userID);
-    console.log('Voted', voteID);
     res.status(200).json({ ...poll, answers, voted: !!voteID });
   } catch (error) {
     next(error);
@@ -95,7 +94,6 @@ router.post('/', async (req, res, next) => {
   try {
     // Add poll and question
     const pollID = await Poll.addNewPoll(question, duration, user);
-    console.log(pollID);
     answers.forEach(async (answer) => {
       await Answer.addAnswer(pollID, answer);
     });
