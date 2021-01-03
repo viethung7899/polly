@@ -28,7 +28,7 @@ const Vote = () => {
         if (poll.voted) setError('You already voted');
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
         let message = 'Oops... Cannot reach to the server';
         if (err.response) message = 'Oops... ' + err.response.data.message;
         setError(message);

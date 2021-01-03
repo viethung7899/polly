@@ -60,7 +60,7 @@ const Login = ({ location }) => {
             onSubmit={(values, { setSubmitting }) => {
               setSubmitting(true);
               const { name, username, password } = values;
-              console.log(values);
+              // console.log(values);
               let action;
               if (values.loginMode) action = login(username, password);
               else action = register(name, username, password);
