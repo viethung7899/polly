@@ -1,8 +1,8 @@
 import { withTRPC } from '@trpc/next'
 import type { AppProps } from 'next/app'
 import '../styles/globals.css'
-import { AppRouter } from './api/trpc/[trpc]'
 import superjson from 'superjson'
+import { AppRouter } from '../backend/router'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return <Component {...pageProps} />

@@ -14,7 +14,7 @@ datasource db {
 
 model Question {
   id        String    @id @default(cuid())
-  title     String
+  title     String    @db.VarChar(255)
   createdAt DateTime  @default(now())
   endedAt   DateTime?
 }
