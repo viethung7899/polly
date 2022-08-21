@@ -28,16 +28,21 @@ export default withTRPC<AppRouter>({
      * @link https://trpc.io/docs/ssr
      */
     return {
+      headers() {
+        return {
+          cookie: ctx?.req?.headers.cookie
+        }
+      },
       url: `${getBaseUrl()}/api/trpc`,
       /**
        * @link https://react-query-v3.tanstack.com/reference/QueryClient
        */
       // queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
-      transformer: superjson
+      transformer: superjson,
     }
   },
   /**
    * @link https://trpc.io/docs/ssr
    */
-  ssr: false,
+  ssr: true,
 })(MyApp)

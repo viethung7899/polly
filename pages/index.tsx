@@ -7,10 +7,12 @@ const Home: NextPage = () => {
 
   if (isLoading || !data) return <div>Loading...</div>
 
-  return <div className='p-4 space-x-4'>
+  return <div className='p-4 space-y-4 flex flex-col'>
     {data.map(question =>
-      <Link key={question.id} href={`/poll/${question.id}`} className="text-2xl hover:font-medium">
+      <Link key={question.id} href={`/poll/${question.id}`}>
+        <p className="text-2xl hover:font-medium">
         {question.title}
+        </p>
       </Link>
     )}
   </div>

@@ -4,8 +4,14 @@ import { z } from 'zod';
 
 export const questionRouter = createRouter()
   .query('getAll', {
-    async resolve() {
-      return await prisma.question.findMany();
+    async resolve({ctx}) {
+      return await prisma.question.findMany({
+        where: {
+          ownerToken: {
+            equals: ctx.token
+          }
+        }
+      });
     },
   })
   .query("getById", {
