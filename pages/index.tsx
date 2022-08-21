@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
-import { prisma } from '../db/client'
-import { trpc } from '../utils/trpc'
+import { prisma } from '@db/client'
+import { trpc } from '@utils/trpc'
 
 const Home: NextPage = () => {
   const {isLoading, data} = trpc.useQuery(["questions.getAll"])

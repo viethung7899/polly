@@ -13,8 +13,25 @@ datasource db {
 }
 
 model Question {
-  id        String    @id @default(cuid())
-  title     String    @db.VarChar(255)
-  createdAt DateTime  @default(now())
-  endedAt   DateTime?
+  id         String    @id @default(cuid())
+  title      String    @db.VarChar(255)
+  createdAt  DateTime  @default(now())
+  endedAt    DateTime?
+  options    Option[]
+  ownerToken String    @db.VarChar(255)
+}
+
+model Option {
+  id         String   @id @default(cuid())
+  name       String   @db.VarChar(255)
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId String
+  votes      Vote[]
+}
+
+model Vote {
+  id       String   @id @default(cuid())
+  votedAt  DateTime @default(now())
+  option   Option   @relation(fields: [optionId], references: [id])
+  optionId String
 }
