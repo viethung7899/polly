@@ -15,12 +15,7 @@
     "jsx": "preserve",
     "incremental": true,
     "noUncheckedIndexedAccess": true,
-    "paths": {
-      "@pages/*": ["./pages/*"],
-      "@backend/*": ["./backend/*"],
-      "@utils/*": ["./utils/*"],
-      "@db/*": ["./db/*"],
-    }
+    "baseUrl": "."
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

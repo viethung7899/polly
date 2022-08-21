@@ -1,5 +1,5 @@
-import { createRouter } from '@backend/context';
-import { prisma } from '@db/client';
+import { createRouter } from 'backend/context';
+import { prisma } from 'db/client';
 import { z } from 'zod';
 
 export const questionRouter = createRouter()
@@ -12,12 +12,17 @@ export const questionRouter = createRouter()
     input: z.object({
       id: z.string()
     }),
-    async resolve({ input }) {
-      return await prisma.question.findFirst({
+    async resolve({ input, ctx }) {
+      const question = await prisma.question.findFirst({
         where: {
           id: input.id
         }
       })
+
+      return {
+        question,
+        isOwner: question?.ownerToken === ctx.token
+      }
     }
   })
   .mutation("create", {
