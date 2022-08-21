@@ -1,11 +1,22 @@
 import type { NextPage } from 'next'
+import { prisma } from '../db/client'
 
-const Home: NextPage = () => {
+const Home: NextPage<{question: string}> = ({question}) => {
   return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
+    <h1>
+      {question}
     </h1>
   )
 }
 
 export default Home
+
+export const getServerSideProps = async () => {
+  const question = await prisma.question.findMany();
+
+  return {
+    props: {
+      question: JSON.stringify(question)
+    }
+  }
+}
