@@ -4,7 +4,8 @@ import { z } from 'zod';
 
 export const questionRouter = createRouter()
   .query('getAll', {
-    async resolve({ctx}) {
+    async resolve({ ctx }) {
+      if (!ctx.token) return []
       return await prisma.question.findMany({
         where: {
           ownerToken: {
