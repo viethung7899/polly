@@ -11,7 +11,6 @@ const Create: NextPage = () => {
   const router = useRouter();
   const { mutate, isLoading, data } = trpc.useMutation("questions.create", {
     onSuccess(data) {
-      console.log("Success: ", data);
       client.invalidateQueries(["questions.getAll"]);
       router.push(`/poll/${data.id}`)
     },

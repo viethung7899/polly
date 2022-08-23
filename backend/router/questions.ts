@@ -1,5 +1,5 @@
 import { Option } from '@prisma/client';
-import { createRouter } from 'backend/context';
+import { createRouter } from '../context';
 import { prisma } from 'db/client';
 import { questionValidator } from 'validation/question';
 import { z } from 'zod';
@@ -33,24 +33,26 @@ export const questionRouter = createRouter()
       })
 
       const vote = await prisma.vote.findFirst({
-        where: { option: { questionId: input.id } }
+        where: { 
+          option: { questionId: input.id },
+          voterToken: ctx.token
+        }
       });
 
       const isOwner = question?.ownerToken === ctx.token
-      const isVoted = vote?.voterToken === ctx.token
 
       const options: OptionWithCount[] = await prisma.option.findMany({
         where: {
           questionId: input.id
         },
-        include: (isOwner || isVoted) ? {
+        include: (isOwner || !!vote) ? {
           _count: {
             select: { votes: true }
           }
         } : undefined
       })
 
-      return { question, isOwner, isVoted, options }
+      return { question, isOwner, isVoted: !!vote, options }
     }
   })
   .mutation("create", {
