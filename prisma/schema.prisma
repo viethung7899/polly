@@ -19,6 +19,8 @@ model Question {
   endedAt    DateTime?
   options    Option[]
   ownerToken String    @db.VarChar(255)
+
+  @@index([ownerToken])
 }
 
 model Option {
@@ -30,8 +32,13 @@ model Option {
 }
 
 model Vote {
-  id       String   @id @default(cuid())
-  votedAt  DateTime @default(now())
-  option   Option   @relation(fields: [optionId], references: [id])
-  optionId String
+  id         String   @id @default(cuid())
+  votedAt    DateTime @default(now())
+  option     Option   @relation(fields: [optionId], references: [id])
+  optionId   String
+  voterToken String   @db.VarChar(255)
+
+  @@unique([voterToken, optionId])
+  @@index([voterToken])
+  @@index([optionId])
 }
