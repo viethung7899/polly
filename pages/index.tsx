@@ -8,12 +8,12 @@ const HomeContent = () => {
   if (isLoading || !data) return <div>Loading...</div>
 
   return <>
-    {data.map(question =>
-      <Link key={question.id} href={`/poll/${question.id}`}>
-        <p className="text-2xl hover:font-medium">
-          {question.title}
-        </p>
+    {data.map(question => <div key={question.id}>
+      <Link href={`/poll/${question.id}`}>
+        <a className="text-2xl hover:font-medium">{question.title}</a>
       </Link>
+      <div className='opacity-50'><em>Created at {question.createdAt.toDateString()}</em></div>
+    </div>
     )}
   </>
 }
@@ -21,7 +21,9 @@ const HomeContent = () => {
 const Home: NextPage = () => {
   return <div className='p-4 space-y-4 flex flex-col'>
     <div className="text-4xl font-bold">Your polls</div>
-    <HomeContent />
+    <div className="flex flex-col space-y-4">
+      <HomeContent />
+    </div>
     <Link href="/create">
       <button className="p-2 bg-blue-200 text-blue-600 rounded-md">Create new poll</button>
     </Link>
