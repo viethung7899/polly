@@ -1,0 +1,7 @@
+.base {
+  @apply border-2 rounded-md px-2 py-4 w-full flex items-center justify-between;
+}
+
+.not-voted {
+  @apply hover:enabled:bg-gray-300;
+}

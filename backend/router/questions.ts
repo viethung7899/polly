@@ -4,6 +4,10 @@ import { prisma } from 'db/client';
 import { questionValidator } from 'validation/question';
 import { z } from 'zod';
 
+export type OptionWithCount = Option & {
+  _count?: { votes: number }
+}
+
 export const questionRouter = createRouter()
   .query('getAll', {
     async resolve({ ctx }) {
@@ -35,7 +39,7 @@ export const questionRouter = createRouter()
       const isOwner = question?.ownerToken === ctx.token
       const isVoted = vote?.voterToken === ctx.token
 
-      const options: (Option & { _count?: { votes: number } })[] = await prisma.option.findMany({
+      const options: OptionWithCount[] = await prisma.option.findMany({
         where: {
           questionId: input.id
         },
@@ -62,6 +66,20 @@ export const questionRouter = createRouter()
               data: input.options
             }
           }
+        }
+      })
+    }
+  })
+  .mutation("vote", {
+    input: z.object({
+      optionId: z.string()
+    }),
+    async resolve({input, ctx}) {
+      if (!ctx.token) throw new Error("Unauthorized");
+      return await prisma.vote.create({
+        data: {
+          optionId: input.optionId,
+          voterToken: ctx.token
         }
       })
     }
