@@ -23,7 +23,7 @@ const PollInput: React.FC<Props> = ({ question, options }) => {
       return (
         <button
           key={option.id}
-          className={`${styles.base} ${styles["not-voted"]} ${choice === option.id && 'bg-gray-200'} ${(!!data || isLoading) && "text-gray-400"}`}
+          className={`${styles.option} hover:enabled:bg-gray-300 hover:enabled:border-gray-300 ${choice === option.id && 'bg-gray-200'} disabled:text-gray-500 diabled:bg-gray-200`}
           disabled={!!data || isLoading}
           onClick={() => setChoice(option.id)}
         >
@@ -32,7 +32,7 @@ const PollInput: React.FC<Props> = ({ question, options }) => {
     })}
     <button
       disabled={!!data || isLoading || !choice}
-      className="p-2 bg-green-200 text-green-600 rounded-md hover:enabled:bg-green-300 disabled:bg-gray-200 disabled:text-gray-400"
+      className={`${styles.button} bg-green-200 text-green-600 hover:enabled:bg-green-300`}
       onClick={() => choice && mutate({ optionId: choice })}
     >
       Submit

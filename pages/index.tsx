@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import Head from 'next/head'
 import Link from 'next/link'
 import styles from "styles/container.module.css"
 import { trpc } from 'utils/trpc'
@@ -22,6 +23,9 @@ const HomeContent = () => {
 
 const Home: NextPage = () => {
   return <div className={styles.container}>
+    <Head>
+      <title>Polly</title>
+    </Head>
     <div className="text-4xl font-bold">Your polls</div>
     <div className="flex flex-col space-y-4">
       <HomeContent />

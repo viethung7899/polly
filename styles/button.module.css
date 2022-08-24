@@ -1,7 +1,11 @@
-.base {
-  @apply border-2 rounded-md px-2 py-4 w-full flex items-center justify-between;
+.input {
+  @apply border-2 rounded-md p-2 w-full flex items-center justify-between focus:outline-gray-400;
 }
 
-.not-voted {
-  @apply hover:enabled:bg-gray-300;
+.button {
+  @apply p-2 disabled:text-gray-400 disabled:bg-gray-200 rounded-md;
+}
+
+.option {
+  @apply px-2 py-4 w-full flex items-center justify-between border-2 border-gray-200 rounded-md; 
 }

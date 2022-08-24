@@ -1,8 +1,10 @@
 import PollInput from "components/PollInput";
 import PollResult from "components/PollResult";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import styles from "styles/container.module.css";
+import buttonStyles from "styles/button.module.css";
 import { trpc } from "utils/trpc";
 
 const PollContent: React.FC<{ id: string }> = ({ id }) => {
@@ -26,6 +28,9 @@ const PollContent: React.FC<{ id: string }> = ({ id }) => {
 
   return <>
     <Head><title>Polly | {data.question.title}</title></Head>
+    <Link href="/">
+    <button className={`${buttonStyles.button} border-2 border-blue-600 text-blue-600 hover:bg-blue-200`}>Back</button>
+    </Link>
     <div className="font-bold text-4xl">{data.question.title}</div>
     {(data.isOwner || data.isVoted)
       ? <PollResult question={data.question} options={data.options} isOwner={data.isOwner} /> 

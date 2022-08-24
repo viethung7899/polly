@@ -1,8 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NextPage } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useFieldArray, useForm } from "react-hook-form";
+import styles from "styles/button.module.css";
+import { MAX_OPTIONS } from "utils/constants";
 import { trpc } from "utils/trpc";
 import { QuestionInputType, questionValidator } from "validation/question";
 
@@ -20,8 +23,11 @@ const Create: NextPage = () => {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, dirtyFields, isValid },
+
   } = useForm<QuestionInputType>({
+    mode: "onChange",
+    reValidateMode: "onChange",
     resolver: zodResolver(questionValidator),
     defaultValues: {
       options: [
@@ -46,6 +52,9 @@ const Create: NextPage = () => {
     <Head>
       <title>Polly | Create</title>
     </Head>
+    <Link href="/">
+      <button className={`${styles.button} border-2 border-blue-600 text-blue-600 hover:enabled:bg-blue-200`}>Back</button>
+    </Link>
     <div className="text-3xl md:text-4xl font-bold">
       Create a new poll
     </div>
@@ -55,9 +64,10 @@ const Create: NextPage = () => {
         <input
           {...register("title")}
           type="text"
-          placeholder="Enter the question"
-          className="w-full p-2 border-2 rounded-md text-2xl" />
-        {errors.title && <div className="text-red-600">
+          placeholder="Enter the question..."
+          className={`${styles.input} text-2xl`}
+          autoComplete="off" />
+        {errors.title && dirtyFields.title && <div className="text-red-600">
           {errors.title.message}
         </div>}
       </div>
@@ -68,13 +78,14 @@ const Create: NextPage = () => {
             <div className="flex space-x-2">
               <input
                 {...register(`options.${index}.name`, { required: true })}
-                className="p-2 flex-1 border-2 rounded-md"
+                autoComplete="off"
+                className={`${styles.input}`}
                 placeholder={`Option ${index + 1}`} />
               <button
-                className="p-2 bg-red-200 text-red-600 rounded-md hover:bg-red-300"
-                onClick={(e) => {
-                  remove(index)
-                }}>
+                className={`${styles.button} bg-red-200 text-red-600 hover:enabled:bg-red-300`}
+                onClick={() => remove(index)}
+                disabled={fields.length <= 2}
+              >
                 Delete
               </button>
             </div>
@@ -86,15 +97,19 @@ const Create: NextPage = () => {
       }
       <div className="flex flex-row items-center justify-between">
         <button
-          className="p-2 bg-blue-200 hover:bg-blue-300 text-blue-600 rounded-md"
+          className={`${styles.button} bg-blue-200 hover:bg-blue-300 text-blue-600`}
           onClick={(e) => {
             e.preventDefault()
             append({ name: "" })
-          }}>
+          }}
+          disabled={fields.length >= MAX_OPTIONS}
+        >
           Add new option
         </button>
         <button
-          className="p-2 bg-blue-600 hover:bg-blue-800 text-white rounded-md" type="submit">
+          className={`${styles.button} text-white bg-blue-600 hover:bg-blue-800`} type="submit"
+          disabled={!isValid}
+        >
           Submit
         </button>
       </div>
