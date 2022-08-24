@@ -59,6 +59,7 @@ export const questionRouter = createRouter()
     input: questionValidator,
     async resolve({ input, ctx }) {
       if (!ctx.token) throw new Error("Unauthorized");
+      const unixTime = (new Date()).getTime() + input.duration * 60_000;
       return await prisma.question.create({
         data: {
           title: input.title,
@@ -67,7 +68,8 @@ export const questionRouter = createRouter()
             createMany: {
               data: input.options
             }
-          }
+          },
+          endedAt: new Date(unixTime)
         }
       })
     }

@@ -11,12 +11,12 @@ const HomeContent = () => {
 
   return <>
     {data.map(question => (
-      <div key={question.id}>
-        <Link href={`/poll/${question.id}`}>
-          <a className="text-2xl hover:font-medium">{question.title}</a>
-        </Link>
-        <div className='opacity-50'><em>Created at {question.createdAt.toDateString()}</em></div>
-      </div>
+      <Link href={`/poll/${question.id}`} key={question.id}>
+        <div className="bg-gray-200 hover:bg-gray-300 p-2 rounded-md cursor-pointer">
+          <div className="text-2xl">{question.title}</div>
+          <div className='opacity-50'><em>Created at {question.createdAt.toDateString()}</em></div>
+        </div>
+      </Link>
     ))}
   </>
 }
@@ -27,7 +27,7 @@ const Home: NextPage = () => {
       <title>Polly</title>
     </Head>
     <div className="text-4xl font-bold">Your polls</div>
-    <div className="flex flex-col space-y-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-4">
       <HomeContent />
     </div>
     <Link href="/create">

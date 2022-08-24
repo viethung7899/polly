@@ -16,7 +16,7 @@ model Question {
   id         String    @id @default(cuid())
   title      String    @db.VarChar(255)
   createdAt  DateTime  @default(now())
-  endedAt    DateTime?
+  endedAt    DateTime
   options    Option[]
   ownerToken String    @db.VarChar(255)
 

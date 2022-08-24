@@ -4,10 +4,12 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useFieldArray, useForm } from "react-hook-form";
-import styles from "styles/button.module.css";
-import { MAX_OPTIONS } from "utils/constants";
+import buttonStyles from "styles/button.module.css";
+import containerStyles from "styles/container.module.css";
+import { MAX_OPTIONS, presetDurations } from "utils/constants";
 import { trpc } from "utils/trpc";
 import { QuestionInputType, questionValidator } from "validation/question";
+import {FaPlus, FaTrash} from "react-icons/fa";
 
 const Create: NextPage = () => {
   const client = trpc.useContext();
@@ -48,30 +50,40 @@ const Create: NextPage = () => {
     </div>
   }
 
-  return <div className="flex flex-col p-10 items-start space-y-4">
+  return <div className={`${containerStyles.container}`}>
     <Head>
-      <title>Polly | Create</title>
+      <title>Polly | New Poll</title>
     </Head>
-    <Link href="/">
-      <button className={`${styles.button} border-2 border-blue-600 text-blue-600 hover:enabled:bg-blue-200`}>Back</button>
-    </Link>
     <div className="text-3xl md:text-4xl font-bold">
-      Create a new poll
+      New poll
     </div>
-    <form className="w-full space-y-3" onSubmit={handleSubmit((data) => mutate(data))}>
-      <div>
-        <div className="text-gray-500">Question</div>
-        <input
-          {...register("title")}
-          type="text"
-          placeholder="Enter the question..."
-          className={`${styles.input} text-2xl`}
-          autoComplete="off" />
-        {errors.title && dirtyFields.title && <div className="text-red-600">
-          {errors.title.message}
-        </div>}
+    <form className="w-full space-y-3" onSubmit={handleSubmit((data => mutate(data)))}>
+      {/* Question title */}
+      <div className="text-gray-500 text-2xl mb-2">Question</div>
+      <input
+        {...register("title")}
+        type="text"
+        placeholder="Enter the question..."
+        className={`${buttonStyles.input} text-2xl`}
+        autoComplete="off" />
+      {errors.title && dirtyFields.title && <div className="text-red-600">
+        {errors.title.message}
+      </div>}
+      <hr />
+      {/* Options */}
+      <div className="flex items-center justify-between">
+        <div className="text-gray-500 text-2xl">Options</div>
+        <button
+          className={`${buttonStyles.button} bg-green-200 hover:bg-green-300 text-green-600 flex items-center space-x-2` }
+          onClick={(e) => {
+            e.preventDefault()
+            append({ name: "" })
+          }}
+          disabled={fields.length >= MAX_OPTIONS}
+        >
+          <FaPlus /><span>Add</span>
+        </button>
       </div>
-      <div className="text-gray-500">Options</div>
       {
         fields.map((field, index) => {
           return <div key={field.id}>
@@ -79,14 +91,14 @@ const Create: NextPage = () => {
               <input
                 {...register(`options.${index}.name`, { required: true })}
                 autoComplete="off"
-                className={`${styles.input}`}
+                className={`${buttonStyles.input}`}
                 placeholder={`Option ${index + 1}`} />
               <button
-                className={`${styles.button} bg-red-200 text-red-600 hover:enabled:bg-red-300`}
+                className={`${buttonStyles.button} bg-red-500 text-white hover:enabled:bg-red-600`}
                 onClick={() => remove(index)}
                 disabled={fields.length <= 2}
               >
-                Delete
+                <FaTrash />
               </button>
             </div>
             {errors.options?.[index]?.name?.message && <div className="text-red-600">
@@ -95,27 +107,29 @@ const Create: NextPage = () => {
           </div>
         })
       }
-      <div className="flex flex-row items-center justify-between">
+      <hr />
+      {/* Expired time */}
+      <div className="flex flex-col sm:flex-row w-full sm:items-center sm:space-x-4 sm:justify-between">
+        <div className="text-gray-500 text-2xl mb-2 sm:mb-0">Duration</div>
+        <select className={`${buttonStyles.input} sm:w-[250px]`} {...register("duration", {
+          valueAsNumber: true
+        })}>
+          {presetDurations.map((duration, index) => <option key={index} value={duration.value}>{duration.label}</option>)}
+        </select>
+      </div>
+      <hr />
+      <div className="flex gap-x-2 justify-end">
+        <Link href="/">
+          <button className={`${buttonStyles.button} border-2 border-blue-600 text-blue-600 hover:enabled:bg-blue-200`}>Cancel</button>
+        </Link>
         <button
-          className={`${styles.button} bg-blue-200 hover:bg-blue-300 text-blue-600`}
-          onClick={(e) => {
-            e.preventDefault()
-            append({ name: "" })
-          }}
-          disabled={fields.length >= MAX_OPTIONS}
-        >
-          Add new option
-        </button>
-        <button
-          className={`${styles.button} text-white bg-blue-600 hover:bg-blue-800`} type="submit"
+          className={`${buttonStyles.button} text-white bg-blue-600 hover:bg-blue-800`}
+          type="submit"
           disabled={!isValid}
         >
-          Submit
+          Create
         </button>
       </div>
-      {errors.options?.message && <div className="text-red-600">
-        {errors.options?.message}
-      </div>}
     </form>
   </div>
 };
