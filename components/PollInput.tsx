@@ -37,7 +37,7 @@ const PollInput: React.FC<Props> = ({ question, options, expired }) => {
       <button
         disabled={!!data || isLoading || !choice}
         className={`${styles.button} bg-green-600 text-white hover:enabled:bg-green-700`}
-        onClick={() => choice && mutate({ optionId: choice })}
+        onClick={() => choice && mutate({ optionId: choice, questionId: question.id })}
       >
         Submit
       </button>

@@ -79,6 +79,7 @@ export const questionRouter = createRouter()
   })
   .mutation("vote", {
     input: z.object({
+      questionId: z.string(),
       optionId: z.string()
     }),
     async resolve({ input, ctx }) {
@@ -89,7 +90,7 @@ export const questionRouter = createRouter()
           voterToken: ctx.token
         }
       });
-      ctx.ee.emit('vote', vote);
+      ctx.ee.emit(`question-${input.questionId}`, vote);
       return vote;
     }
   })
@@ -97,14 +98,14 @@ export const questionRouter = createRouter()
     input: z.object({
       questionId: z.string()
     }),
-    resolve({ ctx }) {
+    resolve({ input, ctx }) {
       return new Subscription<Vote>((emit) => {
         const onVote = (vote: Vote) => {
           emit.data(vote);
         }
-        ctx.ee.on('vote', onVote);
+        ctx.ee.on(`question-${input.questionId}`, onVote);
         return () => {
-          ctx.ee.off('vote', onVote);
+          ctx.ee.off(`question-${input.questionId}`, onVote);
         }
       })
     }
