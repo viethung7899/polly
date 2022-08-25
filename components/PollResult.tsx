@@ -8,7 +8,6 @@ import BackButton from "./BackButton";
 type Props = {
   question: Question;
   options: OptionWithCount[];
-  expired?: boolean;
 }
 
 const PollResult: React.FC<Props> = ({ question, options }) => {
