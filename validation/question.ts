@@ -1,4 +1,4 @@
-import { MAX_OPTIONS, MIN_OPTIONS } from 'utils/constants'
+import { MAX_OPTIONS, MIN_OPTIONS } from '../utils/constants'
 import { z } from 'zod'
 
 export const questionValidator = z.object({

@@ -1,8 +1,9 @@
-import { Option } from '@prisma/client';
-import { createRouter } from '../context';
-import { prisma } from 'db/client';
-import { questionValidator } from 'validation/question';
+import { Option, Vote } from '@prisma/client';
+import { Subscription } from '@trpc/server';
+import { prisma } from '../db/client';
+import { questionValidator } from '../../validation/question';
 import { z } from 'zod';
+import { createRouter } from '../context';
 
 export type OptionWithCount = Option & {
   _count?: { votes: number }
@@ -33,7 +34,7 @@ export const questionRouter = createRouter()
       })
 
       const vote = await prisma.vote.findFirst({
-        where: { 
+        where: {
           option: { questionId: input.id },
           voterToken: ctx.token
         }
@@ -80,14 +81,33 @@ export const questionRouter = createRouter()
     input: z.object({
       optionId: z.string()
     }),
-    async resolve({input, ctx}) {
+    async resolve({ input, ctx }) {
       if (!ctx.token) throw new Error("Unauthorized");
-      return await prisma.vote.create({
+      const vote = await prisma.vote.create({
         data: {
           optionId: input.optionId,
           voterToken: ctx.token
         }
+      });
+      ctx.ee.emit('vote', vote);
+      return vote;
+    }
+  })
+  .subscription("onUpdate", {
+    input: z.object({
+      questionId: z.string()
+    }),
+    resolve({ ctx }) {
+      return new Subscription<Vote>((emit) => {
+        const onVote = (vote: Vote) => {
+          emit.data(vote);
+        }
+        ctx.ee.on('vote', onVote);
+        return () => {
+          ctx.ee.off('vote', onVote);
+        }
       })
     }
   })
+
 

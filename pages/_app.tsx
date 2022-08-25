@@ -2,13 +2,15 @@ import { withTRPC } from '@trpc/next'
 import type { AppProps } from 'next/app'
 import '../styles/globals.css'
 import superjson from 'superjson'
-import { AppRouter } from '../backend'
+import { AppRouter } from '../server'
+import { createWSClient, wsLink } from '@trpc/client/links/wsLink';
+import { httpBatchLink } from '@trpc/client/links/httpBatchLink';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return <Component {...pageProps} />
 }
 
-function getBaseUrl() {
+const getBaseUrl = () => {
   if (typeof window !== 'undefined') {
     return ''
   }
@@ -21,6 +23,22 @@ function getBaseUrl() {
   return `http://localhost:${process.env.PORT ?? 3000}`
 }
 
+const getEndingLink = () => {
+  if (typeof window === 'undefined') {
+    return httpBatchLink({
+      url: `${getBaseUrl()}/api/trpc`
+    })
+  }
+
+  const client = createWSClient({
+    url: process.env.NEXT_PUBLIC_WS_LINK || "ws://localhost:3001"
+  })
+
+  return wsLink<AppRouter>({
+    client
+  })
+}
+
 export default withTRPC<AppRouter>({
   config({ ctx }) {
     /**
@@ -28,6 +46,7 @@ export default withTRPC<AppRouter>({
      * @link https://trpc.io/docs/ssr
      */
     return {
+      links: [getEndingLink()],
       headers() {
         return {
           cookie: ctx?.req?.headers.cookie

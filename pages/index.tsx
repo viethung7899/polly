@@ -27,7 +27,7 @@ const Home: NextPage = () => {
       <title>Polly</title>
     </Head>
     <div className="text-4xl font-bold">Your polls</div>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-4">
+    <div className={styles.dashboard}>
       <HomeContent />
     </div>
     <Link href="/create">

@@ -1,5 +1,5 @@
 import { Question } from "@prisma/client";
-import { OptionWithCount } from "backend/router/questions";
+import { OptionWithCount } from "server/router/questions";
 import { useState } from "react";
 import styles from "styles/button.module.css";
 import { trpc } from "utils/trpc";

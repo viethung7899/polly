@@ -1,6 +1,6 @@
 import { Question } from "@prisma/client";
-import { OptionWithCount } from "backend/router/questions";
-import { useEffect } from "react";
+import { OptionWithCount } from "server/router/questions";
+import { useState } from "react";
 import styles from "styles/button.module.css";
 import { trpc } from "utils/trpc";
 import BackButton from "./BackButton";
@@ -11,34 +11,45 @@ type Props = {
   expired?: boolean;
 }
 
-const PollResult: React.FC<Props> = ({ question, options, expired }) => {
+const PollResult: React.FC<Props> = ({ question, options }) => {
   const client = trpc.useContext();
+  const [items, setItems] = useState(options.map(option => ({
+    name: option.name,
+    id: option.id,
+    count: option._count?.votes || 0
+  })));
 
-  useEffect(() => {
-    const timer = !expired ? setInterval(() => {
-      client.invalidateQueries(["questions.getById", { id: question.id }])
-    }, 2_000) : undefined;
-    return () => {
-      clearInterval(timer);
+  trpc.useSubscription(["questions.onUpdate", { questionId: question.id }], {
+    onNext(vote) {
+      console.log(vote);
+      setItems(prev => {
+        return prev.map(item => {
+          if (item.id === vote.optionId) return { ...item, count: item.count + 1 }
+          return item;
+        })
+      })
+    },
+    onError(err) {
+      console.log("Subscription error...");
+      client.invalidateQueries(["questions.getById", { id: question.id }]);
     }
-  }, [client, question.id, expired]);
+  })
 
-  const total = options.map(option => option._count?.votes || 0).reduce((prev, curr) => prev + curr, 0);
+  const total = items.reduce((prev, curr) => prev + curr.count, 0);
 
   return <>
     {total === 0 && <div className="p-4 text-yellow-700 bg-yellow-200 rounded-md w-full text-center">No one voted yet</div>}
-    {options.map((option) => {
-      const count = option._count?.votes || 0;
+    {items.map((option) => {
       return (
         <div
           key={option.id}
           className={`${styles.option} flex items-center w-full justify-between relative`}
         >
-          {total !== 0 && <div className="absolute left-0 h-full bg-gray-200 rounded-md -z-10" style={{width: `${(count / total) * 100}%`}} />}
+          {total !== 0 && <div className="absolute left-0 h-full bg-gray-200 rounded-md -z-10" style={{ width: `${(option.count / total) * 100}%` }} />}
           <div className="text-xl">
             {option.name}
           </div>
-          {total !== 0 && <div className="text-xl">{count}</div>}
+          {total !== 0 && <div className="text-xl">{option.count}</div>}
         </div>)
     })}
     <BackButton />

@@ -5,3 +5,8 @@
 .banner {
   @apply px-2 py-4 w-full rounded-md;
 }
+
+.dashboard {
+  @apply grid gap-4 w-full;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
