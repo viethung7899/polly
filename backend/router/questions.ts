@@ -29,7 +29,7 @@ export const questionRouter = createRouter()
       const question = await prisma.question.findFirst({
         where: {
           id: input.id
-        }
+        },
       })
 
       const vote = await prisma.vote.findFirst({
@@ -52,7 +52,9 @@ export const questionRouter = createRouter()
         } : undefined
       })
 
-      return { question, isOwner, isVoted: !!vote, options }
+      const expired = question && question.endedAt <= new Date();
+
+      return { question, isOwner, isVoted: !!vote, options, expired }
     }
   })
   .mutation("create", {
