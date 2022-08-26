@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { questionValidator } from '../../validation/question';
 import { createRouter } from '../context';
 import { prisma } from '../db/client';
+import { pusherServer } from '../pusher';
 
 export type OptionWithCount = Option & {
   _count?: { votes: number }
@@ -89,6 +90,9 @@ export const questionRouter = createRouter()
           voterToken: ctx.token
         }
       });
+
+      await pusherServer.trigger(`question-${input.questionId}`, "new-vote", vote);
+
       return vote;
     }
   })
