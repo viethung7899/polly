@@ -1,9 +1,8 @@
-import { Option, Vote } from '@prisma/client';
-import { Subscription } from '@trpc/server';
-import { prisma } from '../db/client';
-import { questionValidator } from '../../validation/question';
+import { Option } from '@prisma/client';
 import { z } from 'zod';
+import { questionValidator } from '../../validation/question';
 import { createRouter } from '../context';
+import { prisma } from '../db/client';
 
 export type OptionWithCount = Option & {
   _count?: { votes: number }
@@ -90,24 +89,7 @@ export const questionRouter = createRouter()
           voterToken: ctx.token
         }
       });
-      ctx.ee.emit(`question-${input.questionId}`, vote);
       return vote;
-    }
-  })
-  .subscription("onUpdate", {
-    input: z.object({
-      questionId: z.string()
-    }),
-    resolve({ input, ctx }) {
-      return new Subscription<Vote>((emit) => {
-        const onVote = (vote: Vote) => {
-          emit.data(vote);
-        }
-        ctx.ee.on(`question-${input.questionId}`, onVote);
-        return () => {
-          ctx.ee.off(`question-${input.questionId}`, onVote);
-        }
-      })
     }
   })
 

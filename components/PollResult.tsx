@@ -1,8 +1,7 @@
 import { Question } from "@prisma/client";
-import { OptionWithCount } from "server/router/questions";
 import { useState } from "react";
+import { OptionWithCount } from "server/router/questions";
 import styles from "styles/button.module.css";
-import { trpc } from "utils/trpc";
 import BackButton from "./BackButton";
 
 type Props = {
@@ -10,29 +9,12 @@ type Props = {
   options: OptionWithCount[];
 }
 
-const PollResult: React.FC<Props> = ({ question, options }) => {
-  const client = trpc.useContext();
-  const [items, setItems] = useState(options.map(option => ({
+const PollResult: React.FC<Props> = ({ options }) => {
+  const [items, _] = useState(options.map(option => ({
     name: option.name,
     id: option.id,
     count: option._count?.votes || 0
   })));
-
-  trpc.useSubscription(["questions.onUpdate", { questionId: question.id }], {
-    onNext(vote) {
-      console.log(vote);
-      setItems(prev => {
-        return prev.map(item => {
-          if (item.id === vote.optionId) return { ...item, count: item.count + 1 }
-          return item;
-        })
-      })
-    },
-    onError(err) {
-      console.log("Subscription error...");
-      client.invalidateQueries(["questions.getById", { id: question.id }]);
-    }
-  })
 
   const total = items.reduce((prev, curr) => prev + curr.count, 0);
 
