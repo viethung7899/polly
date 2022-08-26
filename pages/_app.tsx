@@ -30,8 +30,12 @@ const getEndingLink = () => {
     })
   }
 
+  let wsURL = `ws://localhost:${process.env.WS_PORT ?? 3001}`
+  if (process.env.VERCEL_URL)
+    wsURL = `wss://${process.env.VERCEL_URL}`
+
   const client = createWSClient({
-    url: process.env.NEXT_PUBLIC_WS_LINK || "ws://localhost:3001"
+    url: wsURL
   })
 
   return wsLink<AppRouter>({

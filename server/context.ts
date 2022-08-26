@@ -1,4 +1,5 @@
 import * as trpc from '@trpc/server';
+import * as trpcNext from '@trpc/server/adapters/next';
 import { NodeHTTPCreateContextFnOptions } from '@trpc/server/adapters/node-http';
 import { EventEmitter } from 'events';
 import { IncomingMessage } from 'http';
@@ -7,7 +8,7 @@ import ws from 'ws';
 const ee = new EventEmitter();
 
 export async function createContext(
-  opts?: NodeHTTPCreateContextFnOptions<IncomingMessage, ws>) {
+  opts?: trpcNext.CreateNextContextOptions | NodeHTTPCreateContextFnOptions<IncomingMessage, ws>) {
   const cookieString = opts?.req.headers.cookie || ""
   let cookies: { [key: string]: string } = {};
 
