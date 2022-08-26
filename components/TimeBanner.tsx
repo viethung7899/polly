@@ -13,7 +13,7 @@ const TimeBanner: React.FC<{ endedTime: Date }> = ({ endedTime }) => {
     const interval = !expired ? setInterval(() => {
       console.log("Update...")
       setNow(new Date());
-    }, 60_000) : undefined;
+    }, 1000) : undefined;
     return () => {
       clearInterval(interval);
     }
