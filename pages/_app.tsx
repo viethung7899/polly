@@ -1,11 +1,17 @@
 import { withTRPC } from '@trpc/next'
+import Layout from 'components/Layout'
 import type { AppProps } from 'next/app'
 import superjson from 'superjson'
 import { AppRouter } from '../server'
 import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+
+  return (
+    <Layout>
+      <Component {...pageProps} />
+    </Layout>
+  )
 }
 
 const getBaseUrl = () => {
