@@ -42,7 +42,7 @@ const Home: NextPage = () => {
     <div className='flex items-center w-full justify-between'>
     <div className="text-4xl font-bold">Your polls</div>
     <Link href="/create">
-      <button className="p-2 text-xl rounded-full"><FaPlus /></button>
+      <button className="p-2 text-xl rounded-full bg-blue-600 hover:bg-blue-700"><FaPlus /></button>
     </Link>
     </div>
     <div className={containerStyles.dashboard}>

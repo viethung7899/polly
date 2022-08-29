@@ -18,6 +18,9 @@ export const questionRouter = createRouter()
           ownerToken: {
             equals: ctx.token
           }
+        },
+        orderBy: {
+          createdAt: "desc"
         }
       });
     },
