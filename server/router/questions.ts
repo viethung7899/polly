@@ -55,7 +55,7 @@ export const questionRouter = createRouter()
 
       const expired = question && question.endedAt <= new Date();
 
-      return { question, isOwner, isVoted: !!vote, options, expired }
+      return { question, isOwner, vote, options, expired }
     }
   })
   .mutation("create", {

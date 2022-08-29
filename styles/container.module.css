@@ -3,7 +3,7 @@
 }
 
 .banner {
-  @apply px-2 py-4 w-full rounded-md;
+  @apply px-2 py-4 w-full rounded-md text-center;
 }
 
 .dashboard {

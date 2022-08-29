@@ -37,7 +37,7 @@ const PollInput: React.FC<Props> = ({ question, options }) => {
       return (
         <button
           key={option.id}
-          className={`${styles.option} hover:enabled:bg-gray-300 hover:enabled:border-gray-300 ${choice === option.id && 'bg-gray-200'} disabled:text-gray-500 diabled:bg-gray-200`}
+          className={`${styles.option} disabled:opacity-50 ${choice === option.id ? "ring-4" : "ring-2"} hover:enabled:bg-opacity-30 hover:enabled:bg-white`}
           disabled={expired || !!data || isLoading}
           onClick={() => setChoice(option.id)}
         >
@@ -48,7 +48,7 @@ const PollInput: React.FC<Props> = ({ question, options }) => {
       <BackButton />
       {!expired && <button
         disabled={!!data || isLoading || !choice}
-        className={`${styles.button} bg-green-600 text-white hover:enabled:bg-green-700`}
+        className={`${styles.button} text-green-400 border-green-400 hover:enabled:bg-green-400 hover:enabled:bg-opacity-20`}
         onClick={() => choice && mutate({ optionId: choice, questionId: question.id })}
       >
         Submit

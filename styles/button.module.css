@@ -1,12 +1,26 @@
 .input {
-  @apply border-2 rounded-md p-2 w-full flex items-center justify-between focus:outline-gray-400;
+  @apply border-2 rounded-md p-2 bg-transparent w-full flex items-center justify-between focus:outline-none focus:border-opacity-100 border-opacity-50;
 }
 
 .button {
-  @apply p-2 disabled:text-gray-400 disabled:bg-gray-200 rounded-md;
+  @apply p-2 bg-transparent border-opacity-50 hover:enabled:border-opacity-100 border-2 disabled:opacity-50 disabled:text-gray-500 disabled:border-gray-500 rounded-md;
 }
 
 .option {
-  @apply px-2 py-4 w-full flex items-center justify-between border-2 border-gray-200 rounded-md; 
-  --bg-color: theme('colors.gray.200');
+  @apply px-2 py-4 w-full flex items-center justify-between rounded-lg ring-white; 
+}
+
+.skeleton {
+  @apply border-2 p-2 rounded-md cursor-pointer border-slate-500;
+}
+
+.poll {
+  @apply border-2 p-2 rounded-md cursor-pointer border-slate-500;
+}
+
+.poll:hover {
+  @apply border-double border-transparent;
+  background-image: linear-gradient(transparent, transparent), linear-gradient(45deg, theme('colors.blue.600'), theme('colors.green.600'));
+  background-origin: border-box;
+  background-clip: content-box, border-box;
 }

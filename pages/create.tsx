@@ -42,7 +42,13 @@ const Create: NextPage = () => {
   const { fields, append, remove } = useFieldArray<QuestionInputType>({
     name: "options",
     control
-  })
+  });
+
+  const borderError = (error?: boolean) => {
+    if (error)
+      return "border-red-600"
+    return "border-white"
+  };
 
   if (isLoading || data) {
     return <div className="flex flex-col p-10 items-start space-y-4">
@@ -59,12 +65,12 @@ const Create: NextPage = () => {
     </div>
     <form className="w-full space-y-3" onSubmit={handleSubmit((data => mutate(data)))}>
       {/* Question title */}
-      <div className="text-gray-500 text-2xl mb-2">Question</div>
+      <div className="text-2xl mb-2">Question</div>
       <input
         {...register("title")}
         type="text"
         placeholder="Enter the question..."
-        className={`${buttonStyles.input} text-2xl`}
+        className={`${buttonStyles.input} text-2xl ${borderError(!!errors.title)}`}
         autoComplete="off" />
       {errors.title && dirtyFields.title && <div className="text-red-600">
         {errors.title.message}
@@ -72,9 +78,9 @@ const Create: NextPage = () => {
       <hr />
       {/* Options */}
       <div className="flex items-center justify-between">
-        <div className="text-gray-500 text-2xl">Options</div>
+        <div className="text-2xl">Options</div>
         <button
-          className={`${buttonStyles.button} bg-green-200 hover:bg-green-300 text-green-600 flex items-center space-x-2` }
+          className={`${buttonStyles.button} border-2 border-green-600 text-green-600 hover:enabled:bg-green-600 hover:enabled:bg-opacity-20 flex items-center space-x-2`}
           onClick={(e) => {
             e.preventDefault()
             append({ name: "" })
@@ -86,23 +92,24 @@ const Create: NextPage = () => {
       </div>
       {
         fields.map((field, index) => {
+          const errorMessage = errors.options?.[index]?.name?.message;
           return <div key={field.id}>
             <div className="flex space-x-2">
               <input
                 {...register(`options.${index}.name`, { required: true })}
                 autoComplete="off"
-                className={`${buttonStyles.input}`}
+                className={`${buttonStyles.input} ${borderError(!!errorMessage)}`}
                 placeholder={`Option ${index + 1}`} />
               <button
-                className={`${buttonStyles.button} bg-red-500 text-white hover:enabled:bg-red-600`}
+                className={`${buttonStyles.button} border-2 border-red-600 text-red-600 hover:enabled:bg-red-600 hover:enabled:bg-opacity-20`}
                 onClick={() => remove(index)}
                 disabled={fields.length <= 2}
               >
                 <FaTrash />
               </button>
             </div>
-            {errors.options?.[index]?.name?.message && <div className="text-red-600">
-              {errors.options?.[index]?.name?.message}
+            {errorMessage && <div className="text-red-600">
+              {errorMessage}
             </div>}
           </div>
         })
@@ -110,8 +117,8 @@ const Create: NextPage = () => {
       <hr />
       {/* Expired time */}
       <div className="flex flex-col sm:flex-row w-full sm:items-center sm:space-x-4 sm:justify-between">
-        <div className="text-gray-500 text-2xl mb-2 sm:mb-0">Duration</div>
-        <select className={`${buttonStyles.input} sm:w-[250px]`} {...register("duration", {
+        <div className="text-2xl mb-2 sm:mb-0">Duration</div>
+        <select className={`${buttonStyles.input}`} {...register("duration", {
           valueAsNumber: true
         })}>
           {presetDurations.map((duration, index) => <option key={index} value={duration.value}>{duration.label}</option>)}
@@ -120,10 +127,10 @@ const Create: NextPage = () => {
       <hr />
       <div className="flex gap-x-2 justify-end">
         <Link href="/">
-          <button className={`${buttonStyles.button} border-2 border-blue-600 text-blue-600 hover:enabled:bg-blue-200`}>Cancel</button>
+          <button className={`${buttonStyles.button} border-2 border-red-600 text-red-600 hover:enabled:bg-red-600 hover:enabled:bg-opacity-20`}>Cancel</button>
         </Link>
         <button
-          className={`${buttonStyles.button} text-white bg-blue-600 hover:bg-blue-800`}
+          className={`${buttonStyles.button} border-2 border-blue-600 text-blue-600 hover:enabled:bg-blue-600 hover:enabled:bg-opacity-20`}
           type="submit"
           disabled={!isValid}
         >

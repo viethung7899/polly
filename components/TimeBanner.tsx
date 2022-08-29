@@ -19,13 +19,13 @@ const TimeBanner: React.FC<{ endedTime: Date }> = ({ endedTime }) => {
   }, [expired]);
 
   if (now >= endedTime) return (
-    <div className={`${styles.banner} bg-red-200 text-red-600 text-center`}>
+    <div className={`${styles.banner} bg-red-800 bg-opacity-20 text-red-200`}>
       The poll has ended
     </div>
   )
 
   return (
-    <div className={`${styles.banner} bg-blue-200 text-blue-600 text-center`}>
+    <div className={`${styles.banner} bg-blue-800 bg-opacity-20 text-blue-200`}>
       The poll will end in {dayjs(endedTime).from(now, true)}
     </div>)
 }

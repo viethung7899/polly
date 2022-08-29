@@ -15,16 +15,16 @@ const PollContent: React.FC<{ id: string }> = ({ id }) => {
 
   if (isLoading)
     return (
-      <div className={`${styles.banner} text-gray-600 bg-gray-200`}>
+      <div className={`${styles.banner} bg-blue-800 bg-opacity-20 text-blue-200`}>
         <Head><title>Polly | Loading...</title></Head>
         Loading...
       </div>
     )
   if (error)
     return (
-      <div className={`${styles.banner} text-red-600 bg-red-200`}>
+      <div className={`${styles.banner} bg-red-800 bg-opacity-20 text-red-200`}>
         <Head><title>Polly | Error</title></Head>
-        Error
+        Cannot fetch poll details. Try again later.
       </div>
     )
   if (!data?.question) return <div className={`${styles.banner} text-red-600 bg-red-200`}>Not found</div>;
@@ -36,8 +36,8 @@ const PollContent: React.FC<{ id: string }> = ({ id }) => {
     <div className="font-bold text-4xl">{data.question.title}</div>
     {data.isOwner && <div className="px-2 py-1 font-bold bg-blue-600 text-white rounded-full">AUTHOR</div>}
     <TimeBanner endedTime={endedTime} />
-    {(data.isOwner || data.isVoted)
-      ? <PollResult question={data.question} options={data.options} />
+    {(data.isOwner || data.vote)
+      ? <PollResult question={data.question} options={data.options} vote={data.vote} />
       : <PollInput question={data.question} options={data.options} />
     }
   </>
